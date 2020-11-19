@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="27084a27-fcd2-4731-bcfc-6562f0d9af78" name="Default Changelist" comment="Little UI setup" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SAVE_CHANGES_POLICY" value="STASH" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="dbc96fb0-ada8-4e10-9e36-593ec3613c34" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.3\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1kSK9f4DQajO0rMGxdn4KyBbPwH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="vcs.Subversion" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Project" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="project.Project" />
+      <module name="3170Project" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="project.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Project" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\lcwra\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="27084a27-fcd2-4731-bcfc-6562f0d9af78" name="Default Changelist" comment="" />
+      <created>1605688402927</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1605688402927</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Little UI setup">
+      <created>1605789272903</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1605789272903</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Little UI setup">
+      <created>1605789514640</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1605789514640</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Little UI setup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Little UI setup" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="184" y="86" key="DiffContextDialog" timestamp="1605794339910">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="184" y="86" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605794339910" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1605796254730">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1605796254730" />
+    <state x="775" y="439" key="Github.CreateGistDialog" timestamp="1605792524037">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="775" y="439" key="Github.CreateGistDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605792524037" />
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1605725783637">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1605725783637" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1605725783637">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1605725783637" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1605725783637">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1605725783637" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1605725783637">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1605725783637" />
+    <state x="368" y="86" key="MergeDialog" timestamp="1605790160181">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="368" y="86" key="MergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605790160181" />
+    <state x="1076" y="280" key="MultipleFileMergeDialog" timestamp="1605790166711">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1076" y="280" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605790166711" />
+    <state x="1313" y="243" key="RollbackChangesDialog" timestamp="1605795778662">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1313" y="243" key="RollbackChangesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605795778662" />
+    <state x="922" y="164" key="SettingsEditor" timestamp="1605796671464">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="922" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1605796671464" />
+    <state x="1270" y="392" key="VCS.EditChangelistDialog" timestamp="1605795812045">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1270" y="392" key="VCS.EditChangelistDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605795812045" />
+    <state x="1032" y="239" key="Vcs.Push.Dialog.v2" timestamp="1605789664922">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1032" y="239" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1605789664922" />
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1605796676039">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605796676039" />
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog" timestamp="1605792424517">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605792424517" />
+    <state x="673" y="130" key="new project wizard" timestamp="1605726489772">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="673" y="130" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1605726489772" />
+    <state x="1103" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1605796315339">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1103" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1605796315339" />
+    <state x="1270" y="314" key="svn.repositoryBrowser" timestamp="1605796188665">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1270" y="314" key="svn.repositoryBrowser/0.0.1920.1040@0.0.1920.1040" timestamp="1605796188665" />
+    <state x="1230" y="285" key="svn4idea.import.options" timestamp="1605796141535">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1230" y="285" key="svn4idea.import.options/0.0.1920.1040@0.0.1920.1040" timestamp="1605796141535" />
+  </component>
+</project>
