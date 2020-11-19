@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+
 import java.sql.*;
 /**
  *
@@ -14,5 +15,8 @@ public class Manager {
     public Manager(Connection conn){
         this.conn = conn;
     }
-    
+    void msg()
+    {
+        System.out.println("Login as Manager");
+    }
 }
