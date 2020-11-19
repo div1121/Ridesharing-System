@@ -31,6 +31,7 @@ public class Project {
             System.out.println("VendorError: " + ex.getErrorCode());
         } catch (ClassNotFoundException ex) {
             System.out.println("Java MYSQL DB drive not found");
+            System.exit(0);
         }
     return conn; 
     }
