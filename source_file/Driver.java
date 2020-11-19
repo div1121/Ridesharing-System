@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+
 import java.sql.*;
 /**
  *
@@ -13,5 +14,9 @@ public class Driver {
     public Connection conn;
     public Driver(Connection conn){
         this.conn = conn;
+    }
+    void msg()
+    {
+        System.out.println("Login as Driver");
     }
 }
