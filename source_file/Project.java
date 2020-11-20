@@ -4,100 +4,62 @@
  * and open the template in the editor.
  */
 
-import java.sql.*;
-import java.util.Scanner;
 
+import java.sql.*;
+import java.util.*;
 /**
  *
  * @author user
  */
-public class Project {
-
-    public static Connection connect(){
-        // function to set up connection
-        String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group43";
-        String dbUsername = "Group43";
-        String dbPassword = "3170group43";
-        Connection conn = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(dbAddress,dbUsername,dbPassword);
-         //   System.out.println("Yes");
-        // Do something with the Connection
-        } catch (SQLException ex) {
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Java MYSQL DB drive not found");
-        }
-    return conn; 
+public class Passenger {
+    public Connection conn;
+    public Passenger(Connection conn){
+        this.conn = conn;
     }
-    /**
-     * @param args the command line arguments
-     * @throws java.sql.SQLException
-     */
-
-    public static void Menu()
+    void msg()
     {
-        System.out.println("Welcome! Who are you?");
-        System.out.println("1. An administrotor");
-        System.out.println("2. A passenger");
-        System.out.println("3. A driver");
-        System.out.println("4. A manager");
-        System.out.println("5. None of the above");
-        System.out.println("Please enter [1-4]");
+        System.out.println("Login as Passenger");
     }
 
-    public static void Admin(Connection conn)
+    private void ReqRide()
     {
-        Administrator a = new Administrator(conn);
-        a.msg();
+        System.out.println("1. Request a ride");
     }
-    public static void Driver(Connection conn)
+    private void  CheckTripRecord()
     {
-        Driver a = new Driver(conn);
-        a.msg();
+        System.out.println("2. Check trip records");
     }
-    public static void Manager(Connection conn)
+    private void GoBack()
     {
-        Manager a = new Manager(conn);
-        a.msg();
-    }
-    public static void Passenger(Connection conn)
-    {
-        Passenger a = new Passenger(conn);
-        a.msg();
+        Project a = new Project();
+        System.out.println("");
+        a.Menu();
     }
 
-
-    public static void main(String[] args) throws SQLException {
-        Connection conn = connect();
-        //Administrator admin = new Administrator(conn);
-        //admin.teststatement();
-        Menu();
+    void menu()
+    {
+        System.out.println("Passenger, what would you like to do?");
+        System.out.println("1. Request a ride");
+        System.out.println("2. Check trip records");
+        System.out.println("3. Go back");
+        System.out.println("Please enter [1-3]");
         Scanner sc = new Scanner(System.in);
-        int role = sc.nextInt();
-        switch(role)
+        int op = sc.nextInt();
+        switch (op)
         {
             case 1:
-                Admin(conn);
+                ReqRide();
                 break;
             case 2:
-                Passenger(conn);
+                CheckTripRecord();
                 break;
             case 3:
-                Driver(conn);
-                break;
-            case 4:
-                Manager(conn);
+                GoBack();
                 break;
             default:
-                System.out.println("Bye.");
+                System.out.println("Invalid input, please try again.");
+                menu();
+                break;
         }
-
-
     }
-    
 }
