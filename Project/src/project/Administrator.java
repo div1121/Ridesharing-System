@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package project;
 
 import java.sql.*;
@@ -36,5 +37,10 @@ public class Administrator {
             System.out.print(rs.getInt(1));
             System.out.println();
 	}
+    }
+
+    void msg()
+    {
+        System.out.println("Login as Admin");
     }
 }

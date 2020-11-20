@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 package project;
-
 import java.sql.*;
+import java.util.Scanner;
+
 /**
  *
  * @author user
@@ -21,7 +22,7 @@ public class Project {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(dbAddress,dbUsername,dbPassword);
-           // System.out.println("Yes");
+         //   System.out.println("Yes");
         // Do something with the Connection
         } catch (SQLException ex) {
             // handle any errors
@@ -37,10 +38,66 @@ public class Project {
      * @param args the command line arguments
      * @throws java.sql.SQLException
      */
+
+    public static void Menu()
+    {
+        System.out.println("Welcome! Who are you?");
+        System.out.println("1. An administrotor");
+        System.out.println("2. A passenger");
+        System.out.println("3. A driver");
+        System.out.println("4. A manager");
+        System.out.println("5. None of the above");
+        System.out.println("Please enter [1-4]");
+    }
+
+    public static void Admin(Connection conn)
+    {
+        Administrator a = new Administrator(conn);
+        a.msg();
+    }
+    public static void Driver(Connection conn)
+    {
+        Driver a = new Driver(conn);
+        a.msg();
+    }
+    public static void Manager(Connection conn)
+    {
+        Manager a = new Manager(conn);
+        a.msg();
+    }
+    public static void Passenger(Connection conn)
+    {
+        Passenger a = new Passenger(conn);
+        a.msg();
+    }
+
+
     public static void main(String[] args) throws SQLException {
         Connection conn = connect();
-        Administrator admin = new Administrator(conn);
-        admin.teststatement();
+        //Administrator admin = new Administrator(conn);
+        //admin.teststatement();
+        Menu();
+        Scanner sc = new Scanner(System.in);
+        int role = sc.nextInt();
+        switch(role)
+        {
+            case 1:
+                Admin(conn);
+                break;
+            case 2:
+                Passenger(conn);
+                break;
+            case 3:
+                Driver(conn);
+                break;
+            case 4:
+                Manager(conn);
+                break;
+            default:
+                System.out.println("Bye.");
+        }
+
+
     }
     
 }

@@ -15,4 +15,8 @@ public class Passenger {
     public Passenger(Connection conn){
         this.conn = conn;
     }
+    void msg()
+    {
+        System.out.println("Login as Passenger");
+    }
 }
