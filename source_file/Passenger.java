@@ -21,9 +21,9 @@ public class Passenger {
         System.out.println("Login as Passenger");
     }
 
-    private void FindTrip()
+    private void ReqRide()
     {
-        System.out.println("1. Find trips");
+        System.out.println("1. Request a ride");
     }
     private void  CheckTripRecord()
     {
@@ -48,7 +48,7 @@ public class Passenger {
         switch (op)
         {
             case 1:
-                FindTrip();
+                ReqRide();
                 break;
             case 2:
                 CheckTripRecord();
