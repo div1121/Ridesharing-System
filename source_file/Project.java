@@ -31,6 +31,7 @@ public class Project {
             System.out.println("VendorError: " + ex.getErrorCode());
         } catch (ClassNotFoundException ex) {
             System.out.println("Java MYSQL DB drive not found");
+            System.exit(0);
         }
     return conn; 
     }
@@ -41,6 +42,7 @@ public class Project {
 
     public static void Menu()
     {
+        Connection conn = connect();
         System.out.println("Welcome! Who are you?");
         System.out.println("1. An administrotor");
         System.out.println("2. A passenger");
@@ -48,35 +50,6 @@ public class Project {
         System.out.println("4. A manager");
         System.out.println("5. None of the above");
         System.out.println("Please enter [1-4]");
-    }
-
-    public static void Admin(Connection conn)
-    {
-        Administrator a = new Administrator(conn);
-        a.msg();
-    }
-    public static void Driver(Connection conn)
-    {
-        Driver a = new Driver(conn);
-        a.msg();
-    }
-    public static void Manager(Connection conn)
-    {
-        Manager a = new Manager(conn);
-        a.msg();
-    }
-    public static void Passenger(Connection conn)
-    {
-        Passenger a = new Passenger(conn);
-        a.msg();
-    }
-
-
-    public static void main(String[] args) throws SQLException {
-        Connection conn = connect();
-        //Administrator admin = new Administrator(conn);
-        //admin.teststatement();
-        Menu();
         Scanner sc = new Scanner(System.in);
         int role = sc.nextInt();
         switch(role)
@@ -96,6 +69,37 @@ public class Project {
             default:
                 System.out.println("Bye.");
         }
+    }
+
+    public static void Admin(Connection conn)
+    {
+        Administrator a = new Administrator(conn);
+        a.menu();
+
+    }
+    public static void Driver(Connection conn)
+    {
+        Driver a = new Driver(conn);
+        a.menu();
+    }
+    public static void Manager(Connection conn)
+    {
+        Manager a = new Manager(conn);
+        a.menu();
+    }
+    public static void Passenger(Connection conn)
+    {
+        Passenger a = new Passenger(conn);
+        a.menu();
+    }
+
+
+    public static void main(String[] args) throws SQLException {
+
+        //Administrator admin = new Administrator(conn);
+        //admin.teststatement();
+        Menu();
+
 
 
     }
