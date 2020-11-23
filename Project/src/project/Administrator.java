@@ -67,16 +67,13 @@ public class Administrator {
                     "(id INTEGER unsigned not NULL, " +
                     " name VARCHAR(31), "+
                     " PRIMARY KEY ( id ))";
-      
-          
            String create_taxi_stop = 
                    "CREATE TABLE taxi_stop" + 
                     " (name VARCHAR(21) not NULL,"+
                     " location_x INTEGER, "+ 
                     " location_y INTEGER)";
                 
-           
-        
+
             String create_request =
                 "CREATE TABLE request" +
                     "(id INTEGER unsigned not NULL, " +
@@ -108,6 +105,22 @@ public class Administrator {
                     " FOREIGN KEY driver_id REFERENCES driver (id), "+
                     " FOREIGN KEY passenger_id REFERENCES passenger (id))";
     
+        Statement stmt;
+        try {
+            stmt = conn.createStatement();
+            stmt.execute(create_driver);
+            stmt.execute(create_vehicle);
+            stmt.execute(create_passenger);
+            stmt.execute(create_taxi_stop);
+            stmt.execute(create_request);
+            stmt.execute(create_trip);
+            System.out.println("Processing...Done! Tables are created!");
+             
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
     }
     private void DeleteTables()
     {
