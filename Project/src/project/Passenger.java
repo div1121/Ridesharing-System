@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package project;
 
 import java.sql.*;
+import java.util.*;
 /**
  *
  * @author user
@@ -18,5 +20,47 @@ public class Passenger {
     void msg()
     {
         System.out.println("Login as Passenger");
+    }
+
+    private void ReqRide()
+    {
+        System.out.println("1. Request a ride");
+    }
+    private void  CheckTripRecord()
+    {
+        System.out.println("2. Check trip records");
+    }
+    private void GoBack()
+    {
+        Project a = new Project();
+        System.out.println("");
+        a.Menu();
+    }
+
+    void menu()
+    {
+        System.out.println("Passenger, what would you like to do?");
+        System.out.println("1. Request a ride");
+        System.out.println("2. Check trip records");
+        System.out.println("3. Go back");
+        System.out.println("Please enter [1-3]");
+        Scanner sc = new Scanner(System.in);
+        int op = sc.nextInt();
+        switch (op)
+        {
+            case 1:
+                ReqRide();
+                break;
+            case 2:
+                CheckTripRecord();
+                break;
+            case 3:
+                GoBack();
+                break;
+            default:
+                System.out.println("Invalid input, please try again.");
+                menu();
+                break;
+        }
     }
 }
