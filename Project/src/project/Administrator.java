@@ -53,48 +53,61 @@ public class Administrator {
                     " name VARCHAR(31), " + 
                     " vehicle_id VARCHAR(7), " + 
                     " driving_years INTEGER unsigned, " + 
-                    " PRIMARY KEY ( id )," + 
-                    " FOREIGN KEY driving_years REFERENCES request)";
-                   
+                    " PRIMARY KEY ( id ))" ;      
         
          String create_vehicle = 
                 "CREATE TABLE vehicle" +
                     "(id VARCHAR(7) not NULL, " +
                     " model VARCHAR(31), "+
                     " seats INTEGER unsigned, " + 
-                    " PRIMARY KEY ( id )"+
-                    " FOREIGN KEY model REFERENCES request)";
+                    " PRIMARY KEY ( id ))";
          
            String create_passenger =
                 "CREATE TABLE vehicle" +
-                    "(id VARCHAR(7) not NULL, " +
+                    "(id INTEGER unsigned not NULL, " +
                     " name VARCHAR(31), "+
-                    " PRIMARY KEY ( id )," +
-                    " FOREIGN KEY id REFERENCES request (passenger_id))";
+                    " PRIMARY KEY ( id ))";
+      
           
            String create_taxi_stop = 
                    "CREATE TABLE taxi_stop" + 
-                   "(name VARCHAR(21) not NULL, x INTEGER, y INTEGER)" ;
+                    " (name VARCHAR(21) not NULL,"+
+                    " location_x INTEGER, "+ 
+                    " location_y INTEGER)";
+                
            
         
             String create_request =
                 "CREATE TABLE request" +
-                    "(id VARCHAR(7) not NULL, " +
-                    " passenger_id , "+
-                    " start_location VARCHAR(21),"+
-                    " destination VARCHAR(21),"+
-                    " model ,"+
-                    " passengers ,"+
-                    " taken "+
-                    " driving_years )"
-           
-           
-         
-        
-        
-        
-        driver(id, name, vehicle_id, driving_years)
-              request(id, passenger_id, start_location, destination, model, passengers, taken, driving_years)
+                    "(id INTEGER unsigned not NULL, " +
+                    " passenger_id INTEGER unsigned, "+//in passenger
+                    " start_location VARCHAR(21), "+ //in taxi_stop
+                    " destination VARCHAR(21), "+//in taxi_stop
+                    " model VARCHAR(31),"+ //in vehicle
+                    " passengers INTEGER unsigned,"+
+                    " taken BIT"+ //boolean 
+                    " driving_years INTEGER unsigned, "+ //in driver
+                    " FOREIGN KEY start_location REFERENCES taxi_stop (name), "+
+                    " FOREIGN KEY destination REFERENCES taxi_stop (name), "+
+                    " FOREIGN KEY passenger_id REFERENCES passenger (id), "+
+                    " FOREIGN KEY model REFERENCES vehicle, "+
+                    " FOREIGN KEY driving_years REFERENCES driver) ";
+            
+            String create_trip = 
+                   " CREATE TABLE trip " +
+                   " (id INTEGER unsigned not NULL, "+
+                    " driver_id INTEGER unsigned, " +//in driver
+                    " passenger_id VARCHAR(7), "+// in psasenger
+                    " start_location VARCHAR(21), "+ // in taxi_stop
+                    " destination VARCHAR(21), "+// in taxi_stop
+                    " start_time DATETIME, "+ 
+                    " end_time DATETIME, "+
+                    " fee INTEGER unsigned,"+
+                    " FOREIGN KEY start_location REFERENCES taxi_stop (name), "+
+                    " FOREIGN KEY destination REFERENCES taxi_stop (name), "+
+                    " FOREIGN KEY driver_id REFERENCES driver (id), "+
+                    " FOREIGN KEY passenger_id REFERENCES passenger (id))";
+    
     }
     private void DeleteTables()
     {
