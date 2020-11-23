@@ -47,10 +47,61 @@ public class Administrator {
     private void CreateTables()
     {
         System.out.println("1. Create tables");
+        String create_driver = 
+                "CREATE TABLE driver" +
+                    "(id INTEGER not NULL, " +
+                    " name VARCHAR(31), " + 
+                    " vehicle_id VARCHAR(7), " + 
+                    " driving_years INTEGER unsigned, " + 
+                    " PRIMARY KEY ( id )," + 
+                    " FOREIGN KEY driving_years REFERENCES request)";
+                   
+        
+         String create_vehicle = 
+                "CREATE TABLE vehicle" +
+                    "(id VARCHAR(7) not NULL, " +
+                    " model VARCHAR(31), "+
+                    " seats INTEGER unsigned, " + 
+                    " PRIMARY KEY ( id )"+
+                    " FOREIGN KEY model REFERENCES request)";
+         
+           String create_passenger =
+                "CREATE TABLE vehicle" +
+                    "(id VARCHAR(7) not NULL, " +
+                    " name VARCHAR(31), "+
+                    " PRIMARY KEY ( id )," +
+                    " FOREIGN KEY id REFERENCES request (passenger_id))";
+          
+           String create_taxi_stop = 
+                   "CREATE TABLE taxi_stop" + 
+                   "(name VARCHAR(21) not NULL, x INTEGER, y INTEGER)" ;
+           
+        
+            String create_request =
+                "CREATE TABLE request" +
+                    "(id VARCHAR(7) not NULL, " +
+                    " passenger_id , "+
+                    " start_location VARCHAR(21),"+
+                    " destination VARCHAR(21),"+
+                    " model ,"+
+                    " passengers ,"+
+                    " taken "+
+                    " driving_years )"
+           
+           
+         
+        
+        
+        
+        driver(id, name, vehicle_id, driving_years)
+              request(id, passenger_id, start_location, destination, model, passengers, taken, driving_years)
     }
     private void DeleteTables()
     {
         System.out.println("2. Delete tables");
+        
+        
+        
     }
     private void LoadData()
     {
@@ -67,6 +118,7 @@ public class Administrator {
         System.out.println("");
         a.Menu();
     }
+ 
 
     void menu()
     {
