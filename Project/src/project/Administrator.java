@@ -47,10 +47,127 @@ public class Administrator {
     private void CreateTables()
     {
         System.out.println("1. Create tables");
+        String create_driver =
+                "CREATE TABLE driver" +
+                    "(id INTEGER not NULL, " +
+                    " name VARCHAR(31), " +
+                    " vehicle_id VARCHAR(7), " +
+                    " driving_years INTEGER unsigned, " +
+                    " PRIMARY KEY ( id ))" ;
+
+         String create_vehicle =
+                "CREATE TABLE vehicle" +
+                    "(id VARCHAR(7) not NULL, " +
+                    " model VARCHAR(31), "+
+                    " seats INTEGER unsigned, " +
+                    " PRIMARY KEY ( id ))";
+
+           String create_passenger =
+                "CREATE TABLE passenger" +
+                    "(id INTEGER unsigned not NULL, " +
+                    " name VARCHAR(31), "+
+                    " PRIMARY KEY ( id ))";
+           String create_taxi_stop =
+                   "CREATE TABLE taxi_stop" +
+                    " (name VARCHAR(21) not NULL,"+
+                    " location_x INTEGER, "+
+                    " location_y INTEGER, "+
+                    " PRIMARY KEY ( name ))";
+
+
+            String create_request =
+                "CREATE TABLE request" +
+                    "(id INTEGER unsigned not NULL, " +
+                    " start_location VARCHAR(21) not NULL, "+ //in taxi_stop
+                    " destination VARCHAR(21) not NULL, "+    //in taxi_stop
+                    " passenger_id INTEGER unsigned not NULL, "+//in passenger
+                    " model VARCHAR(31), "+ //in vehicle
+                    " passengers INTEGER unsigned, "+
+                    " taken BIT, "+ //boolean
+                    " driving_years INTEGER unsigned, "+ //in driver
+                    " PRIMARY KEY (id), "+
+                    " FOREIGN KEY (start_location) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
+                    " FOREIGN KEY (destination) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
+                    " FOREIGN KEY (passenger_id) REFERENCES passenger(id) ON DELETE CASCADE ON UPDATE CASCADE, "+
+                    " FOREIGN KEY (model) REFERENCES vehicle ON DELETE CASCADE ON UPDATE CASCADE, "+
+                    " FOREIGN KEY (driving_years) REFERENCES driver ON DELETE CASCADE ON UPDATE CASCADE) ";
+            
+            String create_trip = 
+                   " CREATE TABLE trip " +
+                   " (id INTEGER unsigned not NULL, "+
+                    " driver_id INTEGER unsigned, " +//in driver
+                    " passenger_id VARCHAR(7), "+// in psasenger
+                    " start_location VARCHAR(21), "+ // in taxi_stop
+                    " destination VARCHAR(21), "+// in taxi_stop
+                    " start_time DATETIME, "+ 
+                    " end_time DATETIME, "+
+                    " fee INTEGER unsigned,"+
+                    " PRIMARY KEY (id), "+
+                    " FOREIGN KEY (start_location) REFERENCES taxi_stop(name), "+
+                    " FOREIGN KEY (destination) REFERENCES taxi_stop(name), "+
+                    " FOREIGN KEY (driver_id) REFERENCES driver(id), "+
+                    " FOREIGN KEY (passenger_id) REFERENCES passenger(id))";
+    
+        Statement stmt;
+        try {
+            stmt = conn.createStatement();
+            stmt.execute(create_driver);
+            System.out.println("driver table created");
+            stmt.execute(create_vehicle);
+            System.out.println("vehicle table created");
+            stmt.execute(create_passenger);
+            System.out.println("passenger table created");
+            stmt.execute(create_taxi_stop);
+            System.out.println("taxi_stop table created");
+            stmt.execute(create_request);
+            System.out.println("request table created");
+            stmt.execute(create_trip);
+            System.out.println("trip table created");
+            System.out.println("Processing...Done! Tables are created!");
+             
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
     }
     private void DeleteTables()
     {
         System.out.println("2. Delete tables");
+        String delete_driver = "DROP TABLE IF EXISTS driver";
+        String delete_vehicle = "DROP TABLE IF EXISTS vehicle";
+        String delete_passenger = "DROP TABLE IF EXISTS passenger";
+        String delete_taxi_stop = "DROP TABLE IF EXISTS taxi_stop";
+        String delete_request = "DROP TABLE IF EXISTS request";
+        String delete_trip = "DROP TABLE IF EXISTS trip";
+        Statement stmt;
+        try
+        {
+            stmt = conn.createStatement();
+            stmt.execute(delete_driver);
+            System.out.println("driver table deleted");
+            stmt.execute(delete_vehicle);
+            System.out.println("vehicle table deleted");
+            stmt.execute(delete_passenger);
+            System.out.println("passenger table deleted");
+            stmt.execute(delete_taxi_stop);
+            System.out.println("taxi_stop table deleted");
+            stmt.execute(delete_request);
+            System.out.println("request table deleted");
+            stmt.execute(delete_trip);
+            System.out.println("trip table deleted");
+            System.out.println("Processing...Done! Tables are deleted!");
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+
+        System.out.println("");
+        menu();
+
     }
     private void LoadData()
     {
@@ -67,6 +184,7 @@ public class Administrator {
         System.out.println("");
         a.Menu();
     }
+ 
 
     void menu()
     {
