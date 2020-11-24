@@ -92,9 +92,6 @@ public class Administrator {
                         " ADD FOREIGN KEY (start_location) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
                         " ADD FOREIGN KEY (destination) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
                         " ADD FOREIGN KEY (passenger_id) REFERENCES passenger(id) ON DELETE CASCADE ON UPDATE CASCADE ";
-                        //" ADD FOREIGN KEY (model) REFERENCES vehicle ON DELETE CASCADE ON UPDATE CASCADE ";
-                        //** Problem Here, model is not a primary key, and we cannot use UNIQUE on it, so.... **
-                        //" ADD FOREIGN KEY (driving_years) REFERENCES driver ON DELETE CASCADE ON UPDATE CASCADE ";
 
             String create_trip = 
                    " CREATE TABLE trip " +
