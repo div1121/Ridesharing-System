@@ -60,7 +60,7 @@ public class Administrator {
                     "(id VARCHAR(7) not NULL, " +
                     " model VARCHAR(31), "+
                     " seats INTEGER unsigned, " +
-                    " PRIMARY KEY ( id ))";
+                    " PRIMARY KEY ( id )) " ;
 
            String create_passenger =
                 "CREATE TABLE passenger" +
@@ -85,13 +85,17 @@ public class Administrator {
                     " passengers INTEGER unsigned, "+
                     " taken BIT, "+ //boolean
                     " driving_years INTEGER unsigned, "+ //in driver
-                    " PRIMARY KEY (id), "+
-                    " FOREIGN KEY (start_location) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
-                    " FOREIGN KEY (destination) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
-                    " FOREIGN KEY (passenger_id) REFERENCES passenger(id) ON DELETE CASCADE ON UPDATE CASCADE, "+
-                    " FOREIGN KEY (model) REFERENCES vehicle ON DELETE CASCADE ON UPDATE CASCADE, "+
-                    " FOREIGN KEY (driving_years) REFERENCES driver ON DELETE CASCADE ON UPDATE CASCADE) ";
-            
+                    " PRIMARY KEY (id)) ";
+
+            String alter_request =
+                    "ALTER TABLE request" +
+                        " ADD FOREIGN KEY (start_location) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
+                        " ADD FOREIGN KEY (destination) REFERENCES taxi_stop(name) ON DELETE CASCADE ON UPDATE CASCADE, "+
+                        " ADD FOREIGN KEY (passenger_id) REFERENCES passenger(id) ON DELETE CASCADE ON UPDATE CASCADE ";
+                        //" ADD FOREIGN KEY (model) REFERENCES vehicle ON DELETE CASCADE ON UPDATE CASCADE ";
+                        //** Problem Here, model is not a primary key, and we cannot use UNIQUE on it, so.... **
+                        //" ADD FOREIGN KEY (driving_years) REFERENCES driver ON DELETE CASCADE ON UPDATE CASCADE ";
+
             String create_trip = 
                    " CREATE TABLE trip " +
                    " (id INTEGER unsigned not NULL, "+
@@ -121,6 +125,8 @@ public class Administrator {
             System.out.println("taxi_stop table created");
             stmt.execute(create_request);
             System.out.println("request table created");
+            stmt.execute(alter_request);
+            System.out.println("request table altered");
             stmt.execute(create_trip);
             System.out.println("trip table created");
             System.out.println("Processing...Done! Tables are created!");
@@ -144,6 +150,10 @@ public class Administrator {
         try
         {
             stmt = conn.createStatement();
+            stmt.execute(delete_request);
+            System.out.println("request table deleted");
+            stmt.execute(delete_trip);
+            System.out.println("trip table deleted");
             stmt.execute(delete_driver);
             System.out.println("driver table deleted");
             stmt.execute(delete_vehicle);
@@ -152,10 +162,7 @@ public class Administrator {
             System.out.println("passenger table deleted");
             stmt.execute(delete_taxi_stop);
             System.out.println("taxi_stop table deleted");
-            stmt.execute(delete_request);
-            System.out.println("request table deleted");
-            stmt.execute(delete_trip);
-            System.out.println("trip table deleted");
+
             System.out.println("Processing...Done! Tables are deleted!");
         }
         catch (SQLException ex)
