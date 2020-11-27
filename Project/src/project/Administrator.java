@@ -297,9 +297,11 @@ public class Administrator {
                 start_loc = item[5].trim();
                 dest = item[6].trim();
                 fee = Integer.parseInt(item[7].trim());
-                java.util.Date tmp1 = new SimpleDateFormat("YYY-MM-DD HH:mm:ss").parse(start_time);
-                java.util.Date tmp2 = new SimpleDateFormat("YYY-MM-DD HH:mm:ss").parse(end_time);
+                java.util.Date tmp1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start_time);
+                java.util.Date tmp2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(end_time);
                 //System.out.println(id + "," + name + "," + vid + "," + driving_years);
+                //System.out.println(start_time + ", " + end_time);
+                //System.out.println(tmp1 + ", " + tmp2);
                 String insert_vehicle = "INSERT INTO trip(id, driver_id,passenger_id,start_time,end_time,start_location,destination,fee) VALUES (?,?,?,?,?,?,?,?)" ;
                 PreparedStatement stmt = conn.prepareStatement(insert_vehicle);
                 stmt.setInt(1,id);
@@ -365,7 +367,7 @@ public class Administrator {
     private void LoadData()
     {
         System.out.println("3. Load data");
-        System.out.println("Please enther the folder path");
+        System.out.println("Please enter the folder path");
         Scanner sc = new Scanner(System.in);
         String path = sc.nextLine();
         String path_driver = path + "\\drivers.csv";
