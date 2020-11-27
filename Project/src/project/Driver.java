@@ -24,6 +24,15 @@ public class Driver {
 
     private void SearchReq()
     {
+        
+        ResultSet rs1 = null;
+        ResultSet rs2 = null;
+        ResultSet rs3 = null;
+        
+        String search_model="";
+        int search_driving_years=0;
+        
+        
         System.out.println("1. Search requests");
         
         Scanner sc = new Scanner(System.in);
@@ -43,10 +52,92 @@ public class Driver {
         System.out.println("Please enter the maximum distance from you to your passenger");
         int max_dist = Integer.parseInt(sc.nextLine());
         
-        String searchreq = "SELECT T.id, D.name, V.id, V.model, T.start_time, T.end_time, T.fee, T.start_location, T.destination  "
-                + "FROM request R, trip T, driver D, vehicle V "
-                + "WHERE D.id=T.driver_id AND D.vehicle_id=V.id AND T.passenger_id=? AND T.start_time >= ? AND T.end_time < (? + INTERVAL 1 DAY) AND T.destination=? "
-                + "ORDER BY T.start_time DESC";
+        String model =" SELECT V.Model"
+                + " FROM driver D,vehicle V "
+                + " WHERE D.id= ? AND D.id = V.id ";
+        //1:did
+        
+        String driving_years =" SELECT D.driving_years"
+                + " FROM driver D, "
+                + " WHERE D.id = ? ";
+        //1:did
+        
+        String searchreq = "SELECT R.id, P.name, P.passengers, R.start_location , R.destination "
+                + " FROM request R, passenger P, taxi_stop T1, taxi_stop T2,"
+                + " WHERE R.id=P.id  AND R.taken=0 AND R.start_location=T1.name AND R.destination=T2.name"
+                + " AND (R.driving_years IS NULL OR ? >= R.driving_years) AND (R.model IS NULL OR R.model= ?)"
+                + " AND (ABS(T1.location_x - T2.location_x) + ABS(T1.location_y - T2.location_y)) <= ? "
+                + " AND ?=T1.location_x AND ?= T1.location_y";
+        
+        //1:search_driving_years
+        //2:search_model
+        //3:max_dist 
+        //4:coor_x
+        //5:coor_y
+        
+         try {
+            PreparedStatement stmt1 = conn.prepareStatement(model);//for model
+            PreparedStatement stmt2 = conn.prepareStatement(driving_years);//for years
+            PreparedStatement stmt3 = conn.prepareStatement(searchreq);
+
+            stmt1.setInt(1,did);
+            stmt1.execute();
+            rs1=stmt1.getResultSet();
+            if(!rs1.isBeforeFirst())
+                System.out.println("No records found.");
+            else{
+               while(rs1.next()){
+                    search_model=rs1.getString(1);
+               }
+            }
+            
+                    stmt2.setInt(1,did);
+            stmt2.execute();
+            rs2=stmt2.getResultSet();
+            if(!rs2.isBeforeFirst())
+                System.out.println("No records found.");
+            else{
+            while(rs2.next()){
+               search_driving_years=rs2.getInt(1);
+                }
+            }
+            
+            stmt3.setInt(1,search_driving_years);
+            stmt3.setString(2,search_model);
+            stmt3.setInt(3,max_dist);
+            stmt3.setInt(4,coor_x);
+            stmt3.setInt(5,coor_y);
+            
+            if (stmt3.execute()) {
+                rs3= stmt3.getResultSet();
+            }
+            System.out.println("request ID, passenger name, num of passengers, start location, destination");
+            if(!rs3.isBeforeFirst())
+                System.out.println("No records found.");
+            else
+            while(rs3.next()){
+                System.out.print(rs3.getInt(1));
+                System.out.print(", ");
+                System.out.print(rs3.getString(2));
+                System.out.print(", ");
+                System.out.print(rs3.getInt(3));
+                System.out.print(", ");
+                System.out.print(rs3.getString(4));
+                System.out.print(", ");
+                System.out.print(rs3.getString(5));
+                System.out.println();
+           
+                
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        
+        System.out.println("");
+        menu();
+              
         
         
     }
