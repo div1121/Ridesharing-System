@@ -87,7 +87,7 @@ public class Administrator {
                         " passenger_id INTEGER unsigned not NULL, "+//in passenger
                         " model VARCHAR(31), "+ //in vehicle
                         " passengers INTEGER unsigned, "+
-                        " taken BIT, "+ //boolean
+                        " taken BOOLEAN not NULL, "+ //boolean
                         " driving_years INTEGER unsigned, "+ //in driver
                         " PRIMARY KEY (id)) ";
 
