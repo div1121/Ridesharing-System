@@ -25,10 +25,36 @@ public class Driver {
     private void SearchReq()
     {
         System.out.println("1. Search requests");
+        
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter your ID.");
+        int did = Integer.parseInt(sc.nextLine());
+        System.out.println("Please enter the coordinates of your location.");
+        String coor[]= sc.nextLine().split(" ");
+        int coor_x=0;
+        int coor_y=0;
+        for(int i =0 ;i < coor.length;i++){
+            if(i==0)
+                coor_x = Integer.parseInt(coor[i]);
+            if(i==1)
+                coor_y= Integer.parseInt(coor[i]);
+           }
+        
+        System.out.println("Please enter the maximum distance from you to your passenger");
+        int max_dist = Integer.parseInt(sc.nextLine());
+        
+        String searchreq = "SELECT T.id, D.name, V.id, V.model, T.start_time, T.end_time, T.fee, T.start_location, T.destination  "
+                + "FROM request R, trip T, driver D, vehicle V "
+                + "WHERE D.id=T.driver_id AND D.vehicle_id=V.id AND T.passenger_id=? AND T.start_time >= ? AND T.end_time < (? + INTERVAL 1 DAY) AND T.destination=? "
+                + "ORDER BY T.start_time DESC";
+        
+        
     }
     private void TakeReq()
     {
         System.out.println("2. Take a request");
+        Scanner sc = new Scanner(System.in);
+       
     }
     private void FinishTrip()
     {
