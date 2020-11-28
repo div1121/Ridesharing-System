@@ -53,7 +53,7 @@ public class Driver {
     }
     private void TakeReq()
     {
-        int flag=0,tid;
+        int flag=0,tid=0;
         System.out.println("2. Take a request");
         System.out.println("Please enter your ID.");
         Scanner sc = new Scanner(System.in);
@@ -84,19 +84,23 @@ public class Driver {
             }
             else
             {
-                Integer seat,dy,pid;
-                String model,sl,dest;
+                Integer seat=0,dy=0,pid=0;
+                String model="",sl="",dest="";
 
                 String check_seats = "SELECT passenger_id,start_location,destination,passengers,model,driving_years FROM request WHERE id=?";
                 stmt = conn.prepareStatement(check_seats);
                 stmt.setInt(1,rid);
                 rs = stmt.executeQuery();
-                pid = rs.getInt(1);
-                sl = rs.getString(2);
-                dest = rs.getString(3);
-                seat = rs.getInt(4);
-                model = rs.getString(5);
-                dy = rs.getInt(6);
+                while(rs.next())
+                {
+                    pid = rs.getInt(1);
+                    sl = "'"+rs.getString(2)+"'";
+                    dest = "'"+rs.getString(3)+"'";
+                    seat = rs.getInt(4);
+                    model = rs.getString(5);
+                    dy = rs.getInt(6);
+                }
+
                 rs.close();
 
                     String check_vseats = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND V.seats>=?)";
@@ -129,7 +133,7 @@ public class Driver {
                     {
                         if(dy!=null)
                         {
-                            String check_dy = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND D.driving_year>=?)";
+                            String check_dy = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND D.driving_years>=?)";
                             stmt = conn.prepareStatement(check_dy);
                             stmt.setInt(1,did);
                             stmt.setInt(2,dy);
@@ -142,7 +146,7 @@ public class Driver {
                             }
                             else
                             {
-                                String update_req = "UPDATE request SET taken=(byte)1 WHERE id=?";
+                                String update_req = "UPDATE request SET taken=true WHERE id=?";
                                 stmt = conn.prepareStatement(update_req);
                                 stmt.setInt(1,rid);
                                 stmt.execute();
@@ -153,11 +157,12 @@ public class Driver {
                                 stmt.setInt(2,pid);
                                 stmt.setString(3,sl);
                                 stmt.setString(4,dest);
-                                SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                                 java.util.Date current = new java.util.Date();
-                                java.util.Date tmp1 = sdFormat.parse(current);
+                                String tmp = sf.format(current);
+                                java.util.Date tmp1 = sf.parse(tmp);
                                 stmt.setTimestamp(5,new java.sql.Timestamp(tmp1.getTime()));
-                                stmt.setNull(6,Types.DATETIME);
+                                stmt.setNull(6,java.sql.Types.TIMESTAMP);
                                 stmt.setNull(7,Types.INTEGER);
                                 stmt.execute();
 
@@ -170,6 +175,10 @@ public class Driver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
         }
 
     }
