@@ -149,6 +149,7 @@ public class Driver {
         int flag=0,tid=0;
         Integer seat = 0, dy = 0, pid = 0;
         String model = "", sl = "", dest = "",pn="";
+        Timestamp et;
         System.out.println("2. Take a request");
         System.out.println("Please enter your ID.");
         Scanner sc = new Scanner(System.in);
@@ -156,47 +157,46 @@ public class Driver {
         System.out.println("Please enter the request ID.");
         int rid = sc.nextInt();
         String check_unfinished = "SELECT id,end_time FROM trip WHERE driver_id=?";
-        try
-        {
+        try {
             PreparedStatement stmt = conn.prepareStatement(check_unfinished);
-            stmt.setInt(1,did);
+            stmt.setInt(1, did);
             ResultSet rs = stmt.executeQuery();
-            while ( rs.next() )
-            {
-                tid=rs.getInt(1);
-                if(rs.wasNull())
-                {
-                    flag=1;
+
+            while (rs.next()) {
+                tid = rs.getInt(1);
+                et = rs.getTimestamp(2);
+                if (rs.wasNull()) {
+                    flag = 1;
                     break;
                 }
             }
-            if(flag==1)
-            {
-                System.out.println("Driver_id " + did +" have an unfinished trip (trip_id=" + tid + "), please finished it first to take another request.");
+            if (flag == 1) {
+                System.out.println("Driver_id " + did + " have an unfinished trip (trip_id=" + tid + "), please finished it first to take another request.");
                 System.out.println("");
-                flag=0;
+                flag = 0;
                 menu();
-            }
-            else {
-
-
-                String check_seats = "SELECT passenger_id,start_location,destination,passengers,model,driving_years FROM request WHERE id=?";
-                stmt = conn.prepareStatement(check_seats);
+            } else {
+                System.out.println("Driver Dun have unfinished trip.");
+                String check_request = "SELECT passenger_id,start_location,destination,passengers,model,driving_years FROM request WHERE id=?";
+                stmt = conn.prepareStatement(check_request);
                 stmt.setInt(1, rid);
                 rs = stmt.executeQuery();
 
-                if (rs.next()) {
-                    while (rs.next()) {
-                        pid = rs.getInt(1);
-                        sl = rs.getString(2);
-                        dest = rs.getString(3);
-                        seat = rs.getInt(4);
-                        model = rs.getString(5);
-                        dy = rs.getInt(6);
-                    }
+                while (rs.next()) {
+                    pid = rs.getInt(1);
+                    sl = rs.getString(2);
+                    dest = rs.getString(3);
+                    seat = rs.getInt(4);
+                    model = rs.getString(5);
+                    dy = rs.getInt(6);
+                    System.out.println(pid + " " + sl + " " + dest + " " + seat + " " + model + " " + dy);
+                }
 
-                    rs.close();
-
+                if (sl.isEmpty()) {
+                    System.out.println("Don't have this request ID.");
+                    System.out.println("");
+                    menu();
+                } else {
                     String check_vseats = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND V.seats>=?)";
                     stmt = conn.prepareStatement(check_vseats);
                     stmt.setInt(1, did);
@@ -207,9 +207,9 @@ public class Driver {
                         System.out.println("");
                         menu();
                     }
-
-                    if (!model.isEmpty()) {
-                        String check_model = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND V.model LIKE ?)";
+                    System.out.println("Have enough seat.");
+                    if (model!=null) {
+                        String check_model = "SELECT V.id FROM vehicle V CROSS JOIN driver D WHERE D.vehicle_id=V.id AND D.id=? AND V.model LIKE ?)";
                         stmt = conn.prepareStatement(check_model);
                         stmt.setInt(1, did);
                         stmt.setString(2, "%" + model + "%");
@@ -220,6 +220,7 @@ public class Driver {
                             menu();
                         }
                     } else {
+                        System.out.println("Model match.");
                         if (dy != null) {
                             String check_dy = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND D.driving_years>=?)";
                             stmt = conn.prepareStatement(check_dy);
@@ -231,10 +232,12 @@ public class Driver {
                                 System.out.println("");
                                 menu();
                             } else {
+                                System.out.println("Enough driving year.");
                                 String update_req = "UPDATE request SET taken=true WHERE id=?";
                                 stmt = conn.prepareStatement(update_req);
                                 stmt.setInt(1, rid);
                                 stmt.execute();
+                                System.out.println("Updated taken of the request.");
 
                                 String insert_trip = "INSERT INTO trip(driver_id,passenger_id,start_location,destination,start_time,end_time,fee) VALUES (?,?,?,?,?,?,?)";
                                 stmt = conn.prepareStatement(insert_trip);
@@ -250,35 +253,39 @@ public class Driver {
                                 stmt.setNull(6, java.sql.Types.TIMESTAMP);
                                 stmt.setNull(7, Types.INTEGER);
                                 stmt.execute();
+                                System.out.println("Inserted unfinished trip.");
+
 
                                 String get_pn = "SELECT name FROM passenger WHERE id=?";
                                 stmt = conn.prepareStatement(get_pn);
                                 stmt.setInt(1, pid);
                                 rs = stmt.executeQuery();
-                                if(!rs.next())
-                                {
-                                    System.out.println("Empty passenger list.");
-                                    System.out.println("");
-                                    menu();
-                                }
-                                else
+                                if(rs.next())
                                     pn = rs.getString(1);
-
-                                String get_tid = "SELECT id FROM trip WHERE driver_id=? AND end_time IS NULL";
-                                stmt = conn.prepareStatement(get_tid);
-                                stmt.setInt(1, did);
-                                rs = stmt.executeQuery();
-                                if(!rs.next())
+                                if(pn.isEmpty())
                                 {
-                                    System.out.println("Empty trip list.");
+                                    System.out.println("Passenger with this id doesn't exist.");
                                     System.out.println("");
                                     menu();
                                 }
                                 else
-                                    tid = rs.getInt(1);
+                                {
+                                    String get_tid = "SELECT id FROM trip WHERE driver_id=? AND end_time IS NULL";
+                                    stmt = conn.prepareStatement(get_tid);
+                                    stmt.setInt(1, did);
+                                    rs = stmt.executeQuery();
+                                    if (!rs.next()) {
+                                        System.out.println("Empty trip list.");
+                                        System.out.println("");
+                                        menu();
+                                    } else
+                                        tid = rs.getInt(1);
 
-                                System.out.println("Trip ID, Passenger name, Start");
-                                System.out.println(tid + ","+ pn +","+tmp);
+                                    System.out.println("Trip ID, Passenger name, Start");
+                                    System.out.println(tid + "," + pn + "," + tmp);
+                                }
+
+
                                 System.out.println("");
                                 menu();
 
@@ -286,13 +293,10 @@ public class Driver {
                             }
                         }
                     }
+
+
                 }
-                else
-                {
-                    System.out.println("Empty request list.");
-                    System.out.println("");
-                    menu();
-                }
+
             }
         }
         catch (SQLException ex) {
@@ -304,10 +308,10 @@ public class Driver {
         {
             e.printStackTrace();
         }
-
-        System.out.println("");
-        menu();
-
+        catch(NullPointerException e)
+        {
+            e.printStackTrace();
+        }
     }
     private void FinishTrip()
     {
