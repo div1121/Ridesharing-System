@@ -81,7 +81,7 @@ public class Administrator {
 
         String create_request =
                 "CREATE TABLE request" +
-                        "(id INTEGER unsigned not NULL, " +
+                        "(id INTEGER unsigned not NULL AUTO_INCREMENT, " +
                         " start_location VARCHAR(21) not NULL, "+ //in taxi_stop
                         " destination VARCHAR(21) not NULL, "+    //in taxi_stop
                         " passenger_id INTEGER unsigned not NULL, "+//in passenger
@@ -102,7 +102,7 @@ public class Administrator {
 
         String create_trip =
                 " CREATE TABLE trip " +
-                        " (id INTEGER unsigned not NULL, "+
+                        " (id INTEGER unsigned not NULL AUTO_INCREMENT, "+
                         " driver_id INTEGER unsigned not NULL, " +//in driver
                         " passenger_id INTEGER unsigned not NULL, "+// in psasenger
                         " start_location VARCHAR(21) not NULL, "+ // in taxi_stop

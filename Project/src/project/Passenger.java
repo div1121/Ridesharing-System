@@ -25,7 +25,95 @@ public class Passenger {
 
     private void ReqRide()
     {
-        System.out.println("1. Request a ride");
+            ResultSet rs = null;
+            System.out.println("1. Request a ride");
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Please enter your ID.");
+            int pid = Integer.parseInt(sc.nextLine());
+            System.out.println("Please enter the number of passengers.");
+            int numofpass = Integer.parseInt(sc.nextLine());
+            System.out.println("Please enter the start location.");
+            String startloc = sc.nextLine();
+            System.out.println("Please enter the destination.");
+            String endloc = sc.nextLine();
+            System.out.println("Please enter the model. (Please enter to skip)");
+            String model = sc.nextLine();
+            System.out.println("Please enter the minimum driving year of the driver. (Please enter to skip)");
+            String driveyear = sc.nextLine();
+            int mindriveyear=0,count=0;
+            if (!driveyear.isEmpty()){
+                mindriveyear = Integer.parseInt(driveyear);
+            }
+            String checkrequest = "SELECT * from request where passenger_id=? and taken=0";
+            PreparedStatement stmt;
+            try {
+                stmt = conn.prepareStatement(checkrequest);
+                stmt.setInt(1,pid);
+                if (stmt.execute()) {
+                    rs = stmt.getResultSet();
+                }
+                if(rs.isBeforeFirst())
+                    System.out.println("Reject the insertion due to open request with you.");
+                else {
+                    String matchrequest = "SELECT COUNT(*) "
+                            + "From driver d, vehicle v "
+                            + "WHERE d.vehicle_id=v.id AND v.seats >= ? AND (? IS NULL OR v.model LIKE ?) AND (? is NULL OR d.driving_years >= ?) AND d.id NOT IN "
+                            + "(SELECT driver_id FROM trip WHERE end_time IS NULL)";
+                     stmt = conn.prepareStatement(matchrequest);
+                     stmt.setInt(1,numofpass);
+                     if (!model.isEmpty()){
+                         stmt.setString(2,model);
+                         String temp = "%" + model + "%";
+                         stmt.setString(3, temp);
+                     }
+                     else{
+                         stmt.setString(2, null);
+                         stmt.setString(3, null);
+                     }
+                     if (!driveyear.isEmpty()){
+                         stmt.setInt(4,mindriveyear);
+                         stmt.setInt(5,mindriveyear);
+                     }
+                     else{
+                         stmt.setNull(4, java.sql.Types.INTEGER);
+                         stmt.setNull(5, java.sql.Types.INTEGER);
+                     }
+                    if (stmt.execute()) {
+                        rs = stmt.getResultSet();
+                    }
+                    while(rs.next()){
+                        count = rs.getInt(1);
+                    }
+                    if (count > 0){
+                        String insertrequest = "INSERT INTO request (passenger_id,start_location,destination,model,passengers,taken,driving_years) "
+                        + "VALUES (?,?,?,?,?,?,?)";
+                        stmt = conn.prepareStatement(insertrequest);
+                        stmt.setInt(1,pid);
+                        stmt.setString(2,startloc);
+                        stmt.setString(3,endloc);
+                        if (!model.isEmpty())
+                            stmt.setString(4,model);
+                        else stmt.setString(4, null);
+                        stmt.setInt(5,numofpass);
+                        stmt.setByte(6,(byte)0);
+                        if (!driveyear.isEmpty())
+                            stmt.setInt(7,mindriveyear);
+                        else
+                            stmt.setNull(7, java.sql.Types.INTEGER);
+                        stmt.execute();
+                        System.out.println("Insert record successfully");
+                        System.out.println("Your request is placed. " + count + " drivers are able to take the request.");
+                        
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("SQLException: " + ex.getMessage());
+                System.out.println("SQLState: " + ex.getSQLState());
+                System.out.println("VendorError: " + ex.getErrorCode());
+            }
+            
+            System.out.println("");
+            menu();
     }
     private void  CheckTripRecord()
     {
