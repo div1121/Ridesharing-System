@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package project;
+//package project;
 
 import java.sql.*;
 import java.util.*;
@@ -279,6 +279,9 @@ public class Driver {
 
                                 System.out.println("Trip ID, Passenger name, Start");
                                 System.out.println(tid + ","+ pn +","+tmp);
+                                System.out.println("");
+                                menu();
+
 
                             }
                         }
@@ -301,6 +304,9 @@ public class Driver {
         {
             e.printStackTrace();
         }
+
+        System.out.println("");
+        menu();
 
     }
     private void FinishTrip()
