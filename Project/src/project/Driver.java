@@ -25,17 +25,17 @@ public class Driver {
 
     private void SearchReq()
     {
-        
+
         ResultSet rs1 = null;
         ResultSet rs2 = null;
         ResultSet rs3 = null;
-        
+
         String search_model="";
         int search_driving_years=0;
-        
-        
+
+
         System.out.println("1. Search requests");
-        
+
         Scanner sc = new Scanner(System.in);
         System.out.println("Please enter your ID.");
         int did = Integer.parseInt(sc.nextLine());
@@ -48,21 +48,21 @@ public class Driver {
                 coor_x = Integer.parseInt(coor[i]);
             if(i==1)
                 coor_y= Integer.parseInt(coor[i]);
-           }
-        
+        }
+
         System.out.println("Please enter the maximum distance from you to your passenger");
         int max_dist = Integer.parseInt(sc.nextLine());
-        
+
         String model =" SELECT V.Model"
                 + " FROM driver D,vehicle V "
                 + " WHERE D.id= ? AND D.vehicle_id  = V.id ";
         //1:did
-        
+
         String driving_years =" SELECT D.driving_years"
                 + " FROM driver D "
                 + " WHERE D.id = ? ";
         //1:did
-        
+
         String searchreq = "SELECT R.id, P.name, R.passengers, R.start_location , R.destination "
                 + " FROM request R, passenger P, taxi_stop T "
                 + " WHERE R.id=P.id  AND R.taken=0 "
@@ -70,15 +70,15 @@ public class Driver {
                 + " AND ((R.driving_years IS NULL) OR (R.driving_years <= ?)) "
                 + " AND T.name= R.start_location"
                 + " AND (ABS(? - T.location_x) + ABS(? - T.location_y)) <= ? ";
-         
-        
+
+
         //1:search_driving_years
         //2:search_model
         //3:coor_x
         //4:coor_y
-        //5:max_dist 
-        
-         try {
+        //5:max_dist
+
+        try {
             PreparedStatement stmt1 = conn.prepareStatement(model);//for model
             PreparedStatement stmt2 = conn.prepareStatement(driving_years);//for years
             PreparedStatement stmt3 = conn.prepareStatement(searchreq);
@@ -89,28 +89,28 @@ public class Driver {
             if(!rs1.isBeforeFirst())
                 System.out.println("No records found.");
             else{
-               while(rs1.next()){
+                while(rs1.next()){
                     search_model=rs1.getString(1);
-               }
+                }
             }
-            
+
             stmt2.setInt(1,did);
             stmt2.execute();
             rs2=stmt2.getResultSet();
             if(!rs2.isBeforeFirst())
                 System.out.println("No records found.");
             else{
-            while(rs2.next()){
-               search_driving_years=rs2.getInt(1);
+                while(rs2.next()){
+                    search_driving_years=rs2.getInt(1);
                 }
             }
-            
+
             stmt3.setInt(1,search_driving_years);
             stmt3.setString(2,search_model);
             stmt3.setInt(3,coor_x);
             stmt3.setInt(4,coor_y);
             stmt3.setInt(5,max_dist);
-            
+
             if (stmt3.execute()) {
                 rs3= stmt3.getResultSet();
             }
@@ -118,35 +118,37 @@ public class Driver {
             if(!rs3.isBeforeFirst())
                 System.out.println("No records found.");
             else
-            while(rs3.next()){
-                System.out.print(rs3.getInt(1));
-                System.out.print(", ");
-                System.out.print(rs3.getString(2));
-                System.out.print(", ");
-                System.out.print(rs3.getInt(3));
-                System.out.print(", ");
-                System.out.print(rs3.getString(4));
-                System.out.print(", ");
-                System.out.print(rs3.getString(5));
-                System.out.println();
-           
-                
-            }
+                while(rs3.next()){
+                    System.out.print(rs3.getInt(1));
+                    System.out.print(", ");
+                    System.out.print(rs3.getString(2));
+                    System.out.print(", ");
+                    System.out.print(rs3.getInt(3));
+                    System.out.print(", ");
+                    System.out.print(rs3.getString(4));
+                    System.out.print(", ");
+                    System.out.print(rs3.getString(5));
+                    System.out.println();
+
+
+                }
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
-        
+
         System.out.println("");
         menu();
-              
-        
-        
+
+
+
     }
     private void TakeReq()
     {
         int flag=0,tid=0;
+        Integer seat = 0, dy = 0, pid = 0;
+        String model = "", sl = "", dest = "",pn="";
         System.out.println("2. Take a request");
         System.out.println("Please enter your ID.");
         Scanner sc = new Scanner(System.in);
@@ -176,8 +178,7 @@ public class Driver {
                 menu();
             }
             else {
-                Integer seat = 0, dy = 0, pid = 0;
-                String model = "", sl = "", dest = "";
+
 
                 String check_seats = "SELECT passenger_id,start_location,destination,passengers,model,driving_years FROM request WHERE id=?";
                 stmt = conn.prepareStatement(check_seats);
@@ -250,6 +251,35 @@ public class Driver {
                                 stmt.setNull(7, Types.INTEGER);
                                 stmt.execute();
 
+                                String get_pn = "SELECT name FROM passenger WHERE id=?";
+                                stmt = conn.prepareStatement(get_pn);
+                                stmt.setInt(1, pid);
+                                rs = stmt.executeQuery();
+                                if(!rs.next())
+                                {
+                                    System.out.println("Empty passenger list.");
+                                    System.out.println("");
+                                    menu();
+                                }
+                                else
+                                    pn = rs.getString(1);
+
+                                String get_tid = "SELECT id FROM trip WHERE driver_id=? AND end_time IS NULL";
+                                stmt = conn.prepareStatement(get_tid);
+                                stmt.setInt(1, did);
+                                rs = stmt.executeQuery();
+                                if(!rs.next())
+                                {
+                                    System.out.println("Empty trip list.");
+                                    System.out.println("");
+                                    menu();
+                                }
+                                else
+                                    tid = rs.getInt(1);
+
+                                System.out.println("Trip ID, Passenger name, Start");
+                                System.out.println(tid + ","+ pn +","+tmp);
+
                             }
                         }
                     }
@@ -271,7 +301,7 @@ public class Driver {
         {
             e.printStackTrace();
         }
-       
+
     }
     private void FinishTrip()
     {
