@@ -84,16 +84,19 @@ public class Driver {
             }
             else
             {
-                Integer seat,dy;
-                String model;
+                Integer seat,dy,pid;
+                String model,sl,dest;
 
-                String check_seats = "SELECT passengers,model,driving_years FROM request WHERE id=?";
+                String check_seats = "SELECT passenger_id,start_location,destination,passengers,model,driving_years FROM request WHERE id=?";
                 stmt = conn.prepareStatement(check_seats);
                 stmt.setInt(1,rid);
                 rs = stmt.executeQuery();
-                seat = rs.getInt(1);
-                model = rs.getString(2);
-                dy = rs.getInt(3);
+                pid = rs.getInt(1);
+                sl = rs.getString(2);
+                dest = rs.getString(3);
+                seat = rs.getInt(4);
+                model = rs.getString(5);
+                dy = rs.getInt(6);
                 rs.close();
 
                     String check_vseats = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND V.seats>=?)";
@@ -147,12 +150,9 @@ public class Driver {
                                 String insert_trip = "INSERT INTO trip(driver_id,passenger_id,start_location,destination,start_time,end_time,fee) VALUES (?,?,?,?,?,?,?)";
                                 stmt = conn.prepareStatement(insert_trip);
                                 stmt.setInt(1,did);
-                                String tmp = "SELECT passenger_id FROM request R WHERE R.id=" + rid;
-                                stmt.setInt(2,tmp);
-                                tmp = "SELECT start_location FROM request R WHERE R.id="+rid;
-                                stmt.setString(3,tmp);
-                                tmp = "SELECT destination FROM request R WHERE R.id="+rid;
-                                stmt.setString(4,tmp);
+                                stmt.setInt(2,pid);
+                                stmt.setString(3,sl);
+                                stmt.setString(4,dest);
                                 SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                                 java.util.Date current = new java.util.Date();
                                 java.util.Date tmp1 = sdFormat.parse(current);
