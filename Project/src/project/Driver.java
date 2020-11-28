@@ -54,26 +54,28 @@ public class Driver {
         
         String model =" SELECT V.Model"
                 + " FROM driver D,vehicle V "
-                + " WHERE D.id= ? AND D.id = V.id ";
+                + " WHERE D.id= ? AND D.vehicle_id  = V.id ";
         //1:did
         
         String driving_years =" SELECT D.driving_years"
-                + " FROM driver D, "
+                + " FROM driver D "
                 + " WHERE D.id = ? ";
         //1:did
         
-        String searchreq = "SELECT R.id, P.name, P.passengers, R.start_location , R.destination "
-                + " FROM request R, passenger P, taxi_stop T1, taxi_stop T2,"
-                + " WHERE R.id=P.id  AND R.taken=0 AND R.start_location=T1.name AND R.destination=T2.name"
-                + " AND (R.driving_years IS NULL OR ? >= R.driving_years) AND (R.model IS NULL OR R.model= ?)"
-                + " AND (ABS(T1.location_x - T2.location_x) + ABS(T1.location_y - T2.location_y)) <= ? "
-                + " AND ?=T1.location_x AND ?= T1.location_y";
+        String searchreq = "SELECT R.id, P.name, R.passengers, R.start_location , R.destination "
+                + " FROM request R, passenger P, taxi_stop T "
+                + " WHERE R.id=P.id  AND R.taken=0 "
+                + " AND ((R.model IS NULL) OR (R.model= ?)) "
+                + " AND ((R.driving_years IS NULL) OR (R.driving_years <= ?)) "
+                + " AND T.name= R.start_location"
+                + " AND (ABS(? - T.location_x) + ABS(? - T.location_y)) <= ? ";
+         
         
         //1:search_driving_years
         //2:search_model
-        //3:max_dist 
-        //4:coor_x
-        //5:coor_y
+        //3:coor_x
+        //4:coor_y
+        //5:max_dist 
         
          try {
             PreparedStatement stmt1 = conn.prepareStatement(model);//for model
@@ -91,7 +93,7 @@ public class Driver {
                }
             }
             
-                    stmt2.setInt(1,did);
+            stmt2.setInt(1,did);
             stmt2.execute();
             rs2=stmt2.getResultSet();
             if(!rs2.isBeforeFirst())
@@ -104,9 +106,9 @@ public class Driver {
             
             stmt3.setInt(1,search_driving_years);
             stmt3.setString(2,search_model);
-            stmt3.setInt(3,max_dist);
-            stmt3.setInt(4,coor_x);
-            stmt3.setInt(5,coor_y);
+            stmt3.setInt(3,coor_x);
+            stmt3.setInt(4,coor_y);
+            stmt3.setInt(5,max_dist);
             
             if (stmt3.execute()) {
                 rs3= stmt3.getResultSet();
