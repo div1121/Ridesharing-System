@@ -144,7 +144,7 @@ public class Driver {
 
 
     }
-    private void TakeReq()
+      private void TakeReq()
     {
         int flag=0,tid=0;
         Integer seat = 0, dy = 0, pid = 0;
@@ -257,80 +257,79 @@ public class Driver {
                                     stmt.setInt(1, did);
                                     stmt.setInt(2, dy);
                                     rs = stmt.executeQuery();
-                                    if (!rs.next())
-                                    {
+                                    if (!rs.next()) {
                                         System.out.println("Not fulfill driving year requirement. Please try another request.");
+                                        System.out.println("");
+                                        menu();
+                                    }
+                                }
+                                else
+                                {
+                                    System.out.println("Enough driving year.");
+                                    String update_req = "UPDATE request SET taken=true WHERE id=?";
+                                    stmt = conn.prepareStatement(update_req);
+                                    stmt.setInt(1, rid);
+                                    stmt.execute();
+                                    System.out.println("Updated taken of the request.");
+
+                                    String insert_trip = "INSERT INTO trip(driver_id,passenger_id,start_location,destination,start_time,end_time,fee) VALUES (?,?,?,?,?,?,?)";
+                                    stmt = conn.prepareStatement(insert_trip);
+                                    stmt.setInt(1, did);
+                                    stmt.setInt(2, pid);
+                                    stmt.setString(3, sl);
+                                    stmt.setString(4, dest);
+                                    SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                    java.util.Date current = new java.util.Date();
+                                    String tmp = sf.format(current);
+                                    java.util.Date tmp1 = sf.parse(tmp);
+                                    stmt.setTimestamp(5, new java.sql.Timestamp(tmp1.getTime()));
+                                    stmt.setNull(6, java.sql.Types.TIMESTAMP);
+                                    stmt.setNull(7, Types.INTEGER);
+                                    stmt.execute();
+                                    System.out.println("Inserted unfinished trip.");
+
+
+                                    String get_pn = "SELECT name FROM passenger WHERE id=?";
+                                    stmt = conn.prepareStatement(get_pn);
+                                    stmt.setInt(1, pid);
+                                    rs = stmt.executeQuery();
+                                    if(rs.next())
+                                        pn = rs.getString(1);
+                                    if(pn.isEmpty())
+                                    {
+                                        System.out.println("Passenger with this id doesn't exist.");
                                         System.out.println("");
                                         menu();
                                     }
                                     else
                                     {
-                                        System.out.println("Enough driving year.");
-                                        String update_req = "UPDATE request SET taken=true WHERE id=?";
-                                        stmt = conn.prepareStatement(update_req);
-                                        stmt.setInt(1, rid);
-                                        stmt.execute();
-                                        System.out.println("Updated taken of the request.");
-
-                                        String insert_trip = "INSERT INTO trip(driver_id,passenger_id,start_location,destination,start_time,end_time,fee) VALUES (?,?,?,?,?,?,?)";
-                                        stmt = conn.prepareStatement(insert_trip);
+                                        String get_tid = "SELECT id FROM trip WHERE driver_id=? AND end_time IS NULL";
+                                        stmt = conn.prepareStatement(get_tid);
                                         stmt.setInt(1, did);
-                                        stmt.setInt(2, pid);
-                                        stmt.setString(3, sl);
-                                        stmt.setString(4, dest);
-                                        SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                                        java.util.Date current = new java.util.Date();
-                                        String tmp = sf.format(current);
-                                        java.util.Date tmp1 = sf.parse(tmp);
-                                        stmt.setTimestamp(5, new java.sql.Timestamp(tmp1.getTime()));
-                                        stmt.setNull(6, java.sql.Types.TIMESTAMP);
-                                        stmt.setNull(7, Types.INTEGER);
-                                        stmt.execute();
-                                        System.out.println("Inserted unfinished trip.");
-
-
-                                        String get_pn = "SELECT name FROM passenger WHERE id=?";
-                                        stmt = conn.prepareStatement(get_pn);
-                                        stmt.setInt(1, pid);
                                         rs = stmt.executeQuery();
-                                        if(rs.next())
-                                            pn = rs.getString(1);
-                                        if(pn.isEmpty())
+                                        if (!rs.next())
                                         {
-                                            System.out.println("Passenger with this id doesn't exist.");
+                                            System.out.println("No trip found.");
                                             System.out.println("");
                                             menu();
                                         }
                                         else
-                                        {
-                                            String get_tid = "SELECT id FROM trip WHERE driver_id=? AND end_time IS NULL";
-                                            stmt = conn.prepareStatement(get_tid);
-                                            stmt.setInt(1, did);
-                                            rs = stmt.executeQuery();
-                                            if (!rs.next())
-                                            {
-                                                System.out.println("No trip found.");
-                                                System.out.println("");
-                                                menu();
-                                            }
-                                            else
-                                                tid = rs.getInt(1);
+                                            tid = rs.getInt(1);
 
-                                            System.out.println("Trip ID, Passenger name, Start");
-                                            System.out.println(tid + "," + pn + "," + tmp);
-                                        }
-
-
-                                        System.out.println("");
-                                        menu();
+                                        System.out.println("Trip ID, Passenger name, Start");
+                                        System.out.println(tid + "," + pn + "," + tmp);
                                     }
+
+
+                                    System.out.println("");
+                                    menu();
                                 }
                             }
                         }
                     }
                 }
             }
-        }
+            }
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
