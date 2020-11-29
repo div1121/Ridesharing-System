@@ -197,7 +197,7 @@ public class Driver {
                     System.out.println("");
                     menu();
                 } else {
-                    String check_vseats = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND V.seats>=?)";
+                    String check_vseats = "SELECT V.id FROM vehicle V CROSS JOIN driver D WHERE D.vehicle_id=V.id AND D.id=? AND V.seats>=?";
                     stmt = conn.prepareStatement(check_vseats);
                     stmt.setInt(1, did);
                     stmt.setInt(2, seat);
@@ -209,7 +209,7 @@ public class Driver {
                     }
                     System.out.println("Have enough seat.");
                     if (model!=null) {
-                        String check_model = "SELECT V.id FROM vehicle V CROSS JOIN driver D WHERE D.vehicle_id=V.id AND D.id=? AND V.model LIKE ?)";
+                        String check_model = "SELECT V.id FROM vehicle V CROSS JOIN driver D WHERE D.vehicle_id=V.id AND D.id=? AND V.model LIKE ?";
                         stmt = conn.prepareStatement(check_model);
                         stmt.setInt(1, did);
                         stmt.setString(2, "%" + model + "%");
@@ -222,7 +222,7 @@ public class Driver {
                     } else {
                         System.out.println("Model match.");
                         if (dy != null) {
-                            String check_dy = "SELECT V.id FROM vehicle V WHERE EXISTS (SELECT * FROM vehicle V natural join driver D WHERE D.id=? AND D.driving_years>=?)";
+                            String check_dy = "SELECT V.id FROM vehicle V CROSS JOIN driver D WHERE D.vehicle_id=V.id AND D.id=? AND D.driving_years>=?";
                             stmt = conn.prepareStatement(check_dy);
                             stmt.setInt(1, did);
                             stmt.setInt(2, dy);
