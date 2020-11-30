@@ -346,7 +346,110 @@ public class Driver {
     }
     private void FinishTrip()
     {
+        int tid=0,pid=0,fee;
+        java.util.Date start=new java.util.Date();
+        String tmp="";
+        String pn="";
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         System.out.println("3. Finish a trip");
+        System.out.println("Please enter your ID.");
+        Scanner sc = new Scanner(System.in);
+        int did = sc.nextInt();
+        String check_ut = "SELECT T.id,passenger_id,start_time,name FROM trip T cross join passenger P WHERE T.passenger_id=P.id and end_time IS NULL and driver_id=?";
+        try
+        {
+            PreparedStatement stmt = conn.prepareStatement(check_ut);
+            stmt.setInt(1, did);
+            ResultSet rs = stmt.executeQuery();
+            if(!rs.next())
+            {
+                System.out.println("You don't have an unfinish trip.");
+                System.out.println("");
+                menu();
+            }
+            else
+            {
+                   tid = rs.getInt(1);
+                   pid = rs.getInt(2);
+                   Timestamp tt = rs.getTimestamp(3);
+                   start = tt;
+                   tmp=sf.format(start);
+                   pn= rs.getString(4);
+                   System.out.println("Trip ID, Passenger ID, Start");
+                   System.out.println(tid+", "+pid+", "+tmp);
+                   System.out.println("Do you wish to finish the trip? [y/n]");
+                   char op = sc.next().charAt(0);
+                   if(op=='y')
+                   {
+                       System.out.println("Trip ID, Passenger name, Start, End, Fee");
+                       java.util.Date current = new java.util.Date();
+                       tmp = sf.format(current);
+                       java.util.Date tmp1 = sf.parse(tmp);
+                       Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+                       calendar.setTime(start);   // assigns calendar to given date
+                       int start_hr = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+                       int start_min = calendar.get(Calendar.MINUTE); // gets hour in 24h format
+                       int start_s = calendar.get(Calendar.SECOND); // gets hour in 24h format
+                       calendar.setTime(current);   // assigns calendar to given date
+                       int end_hr = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+                       int end_min = calendar.get(Calendar.MINUTE); // gets hour in 24h format
+                       int end_s = calendar.get(Calendar.SECOND); // gets hour in 24h format
+                       fee = java.lang.Math.abs((end_hr-start_hr)*60 + (int)java.lang.Math.abs(end_min-start_min));
+
+                       String ft = "UPDATE trip SET end_time=?, fee=? WHERE id=?";
+                       stmt = conn.prepareStatement(ft);
+                       stmt.setTimestamp(1, new java.sql.Timestamp(tmp1.getTime()));
+                       stmt.setInt(2,fee);
+                       stmt.setInt(3,tid);
+                       stmt.execute();
+
+
+                       String check_final = "SELECT T.id,start_time,end_time,fee,name FROM trip T cross join passenger P WHERE T.id=?";
+                       stmt = conn.prepareStatement(check_final);
+                       stmt.setInt(1, tid);
+                       rs = stmt.executeQuery();
+
+                       if(!rs.next())
+                       {
+                           System.out.println("Error in finding trip record.");
+                           System.out.println("");
+                           menu();
+                       }
+                       else
+                       {
+                           tid = rs.getInt(1);
+                           tt = rs.getTimestamp(2);
+                           start = tt;
+                           tmp=sf.format(start);
+                           tt = rs.getTimestamp(3);
+                           java.util.Date end = tt;
+                           String tmp2=sf.format(end);
+                           fee = rs.getInt(4);
+                           pn= rs.getString(5);
+                           System.out.println(tid+", "+pn+", "+tmp+", "+tmp2+", "+fee);
+                       }
+
+                   }
+
+                System.out.println("");
+                menu();
+
+            }
+
+        }
+        catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        catch(ParseException e)
+        {
+            e.printStackTrace();
+        }
+        catch(NullPointerException e)
+        {
+            e.printStackTrace();
+        }
     }
     private void GoBack()
     {
