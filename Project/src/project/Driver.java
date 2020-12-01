@@ -312,7 +312,7 @@ public class Driver {
                         stmt.setInt(1, did);
                         stmt.setInt(2, seat);
                         rs = stmt.executeQuery();
-                        if (rs.wasNull())
+                        if (!rs.next())
                         {
                             System.out.println("Not enough seat. Please try another request.");
                             System.out.println("");
