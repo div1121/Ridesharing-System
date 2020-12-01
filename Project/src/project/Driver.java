@@ -459,11 +459,22 @@ public class Driver {
         java.util.Date start=new java.util.Date();
         String tmp="";
         String pn="";
+        Scanner sc = new Scanner(System.in);
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         System.out.println("3. Finish a trip");
-        System.out.println("Please enter your ID.");
-        Scanner sc = new Scanner(System.in);
-        int did = sc.nextInt();
+        int did,rid;
+        while(true)
+        {
+            try {
+                System.out.println("Please enter your ID.");
+                Scanner input = new Scanner(System.in);
+                did = input.nextInt();
+                break;
+            }
+            catch(InputMismatchException | NumberFormatException ex ) {
+                System.out.println("[ERROR] Invalid input");
+            }
+        }
         String check_ut = "SELECT T.id,passenger_id,start_time,name FROM trip T cross join passenger P WHERE T.passenger_id=P.id and end_time IS NULL and driver_id=?";
         try
         {
