@@ -341,8 +341,9 @@ public class Driver {
                         else
                         {
                             System.out.println("Have enough seat.");
-                            if (model!=null)
+                            if (!model.isEmpty())
                             {
+                                System.out.println("Checking model: "+model);
                                 String check_model = "SELECT V.id FROM vehicle V CROSS JOIN driver D WHERE D.vehicle_id=V.id AND D.id=? AND V.model LIKE ?";
                                 stmt = conn.prepareStatement(check_model);
                                 stmt.setInt(1, did);
@@ -355,8 +356,7 @@ public class Driver {
                                     menu();
                                 }
                             }
-                            else
-                            {
+
                                 System.out.println("Model match.");
                                 if (dy > 0)
                                 {
@@ -433,7 +433,7 @@ public class Driver {
                                     System.out.println("");
                                     menu();
                                 }
-                            }
+
                         }
                     }
                 }
