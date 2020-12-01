@@ -241,11 +241,31 @@ public class Driver {
         Timestamp et;
         boolean taken=true;
         System.out.println("2. Take a request");
-        System.out.println("Please enter your ID.");
-        Scanner sc = new Scanner(System.in);
-        int did = sc.nextInt();
-        System.out.println("Please enter the request ID.");
-        int rid = sc.nextInt();
+        int did,rid;
+        while(true)
+        {
+            try {
+                System.out.println("Please enter your ID.");
+                Scanner input = new Scanner(System.in);
+                did = input.nextInt();
+                break;
+            }
+            catch(InputMismatchException | NumberFormatException ex ) {
+                System.out.println("[ERROR] Invalid input");
+            }
+        }
+        while(true)
+        {
+            try {
+                System.out.println("Please enter the request ID.");
+                Scanner input = new Scanner(System.in);
+                rid = input.nextInt();
+                break;
+            }
+            catch(InputMismatchException | NumberFormatException ex ) {
+                System.out.println("[ERROR] Invalid input");
+            }
+        }
         String check_unfinished = "SELECT id,end_time FROM trip WHERE driver_id=?";
         try {
             PreparedStatement stmt = conn.prepareStatement(check_unfinished);
