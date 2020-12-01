@@ -23,6 +23,18 @@ public class Driver {
     {
         System.out.println("Login as Driver");
     }
+    
+    public static boolean isNumber(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int d = Integer.parseInt(strNum);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 
     private void SearchReq()
     {
@@ -32,25 +44,100 @@ public class Driver {
         ResultSet rs3 = null;
 
         String search_model="";
+       
         int search_driving_years=0;
-
+        
+        String input_did=null;
+    
+        int coor_x=-1;
+        int coor_y=-1;
+        
+        boolean set_coor_x=false;
+        boolean set_coor_y=false;
+ 
+        
 
         System.out.println("1. Search requests");
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("Please enter your ID.");
-        int did = Integer.parseInt(sc.nextLine());
-        System.out.println("Please enter the coordinates of your location.");
-        String coor[]= sc.nextLine().split(" ");
-        int coor_x=0;
-        int coor_y=0;
-        for(int i =0 ;i < coor.length;i++){
-            if(i==0)
+        
+        boolean did_not_found=false;
+        int did=0;//for input to SQL
+         
+        do{
+           did_not_found=false;
+            System.out.println("Please enter your ID.");
+            input_did = sc.nextLine().trim();
+            if (!isNumber( input_did))
+                System.out.println("[ERROR] The input is not a number");
+            else {
+            did = Integer.parseInt(input_did);
+            //check if there is that id in the Database
+                String check_id =" SELECT *"
+                + " FROM driver D"
+                + " WHERE D.id= ? ";
+                try {
+                    PreparedStatement stmt_check_id = conn.prepareStatement(check_id);
+                    stmt_check_id.setInt(1,did);
+                    stmt_check_id.execute();
+                    rs1=stmt_check_id.getResultSet();
+                    if(!rs1.isBeforeFirst())
+                    {   
+                        did_not_found=true;
+                        System.out.println("[Error] No records found.");
+                    }
+                }
+                catch (SQLException ex) {
+                    System.out.println("SQLException: " + ex.getMessage());
+                    System.out.println("SQLState: " + ex.getSQLState());
+                    System.out.println("VendorError: " + ex.getErrorCode());
+                }
+            }
+        }while((!isNumber(input_did))||did_not_found);
+        
+        
+        
+        
+       boolean coor_invalid=false;
+        
+       
+        do{
+            coor_invalid=false;
+            set_coor_x=false;
+            set_coor_y=false;
+            coor_x=-1;
+            coor_y=-1;
+            try{
+            System.out.println("Please enter the coordinates of your location.");
+            String coor[]= sc.nextLine().split(" ");
+       
+            for(int i =0 ;i < coor.length;i++){
+            
+              if(i==0)
                 coor_x = Integer.parseInt(coor[i]);
-            if(i==1)
+                if(i==1)
                 coor_y= Integer.parseInt(coor[i]);
-        }
+            }
+            if(coor_x<0||coor_y<0||coor.length>2){
+                 System.out.println("[ERROR] Invalid input");
+                 // System.out.println("coor_x is "+ coor_x+" and coor_y is "+ coor_y);
+                coor_invalid=true;
 
+            }
+            }
+        
+            catch(NumberFormatException e){
+                System.out.println("[ERROR] Please enter integer");
+                coor_invalid=true;
+                
+            }
+
+        }
+        while(coor_invalid);
+         
+      
+        
+        
         System.out.println("Please enter the maximum distance from you to your passenger");
         int max_dist = Integer.parseInt(sc.nextLine());
 
@@ -115,10 +202,11 @@ public class Driver {
             if (stmt3.execute()) {
                 rs3= stmt3.getResultSet();
             }
-            System.out.println("request ID, passenger name, num of passengers, start location, destination");
+           
             if(!rs3.isBeforeFirst())
                 System.out.println("No records found.");
-            else
+            else{
+                 System.out.println("request ID, passenger name, num of passengers, start location, destination");
                 while(rs3.next()){
                     System.out.print(rs3.getInt(1));
                     System.out.print(", ");
@@ -130,7 +218,7 @@ public class Driver {
                     System.out.print(", ");
                     System.out.print(rs3.getString(5));
                     System.out.println();
-
+                }
 
                 }
         } catch (SQLException ex) {
@@ -468,25 +556,31 @@ public class Driver {
         System.out.println("4. Go back");
         System.out.println("Please enter [1-4]");
         Scanner sc = new Scanner(System.in);
-        int op = sc.nextInt();
-        switch (op)
-        {
-            case 1:
-                SearchReq();
-                break;
-            case 2:
-                TakeReq();
-                break;
-            case 3:
-                FinishTrip();
-                break;
-            case 4:
-                GoBack();
-                break;
-            default:
-                System.out.println("Invalid input, please try again.");
-                menu();
-                break;
+        try{
+            int op = sc.nextInt();
+            switch (op)
+            {
+                case 1:
+                    SearchReq();
+                    break;
+                case 2:
+                    TakeReq();
+                    break;
+                case 3:
+                    FinishTrip();
+                    break;
+                case 4:
+                    GoBack();
+                    break;
+                default:
+                    System.out.println("[Error] Invalid input.");     
+                    menu();
+                    break;
+            }
+        }
+        catch(InputMismatchException e) {
+            System.out.println("[Error] Invalid input.");     
+            menu();
         }
     }
 
