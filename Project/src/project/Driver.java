@@ -153,15 +153,15 @@ public class Driver {
 
         String searchreq = "SELECT R.id, P.name, R.passengers, R.start_location , R.destination "
                 + " FROM request R, passenger P, taxi_stop T "
-                + " WHERE R.id=P.id  AND R.taken=0 "
+                + " WHERE R.passenger_id=P.id  AND R.taken=0 "
                 + " AND ((R.model IS NULL) OR (R.model= ?)) "
                 + " AND ((R.driving_years IS NULL) OR (R.driving_years <= ?)) "
                 + " AND T.name= R.start_location"
                 + " AND (ABS(? - T.location_x) + ABS(? - T.location_y)) <= ? ";
 
 
-        //1:search_driving_years
-        //2:search_model
+        //1:search_model
+        //2:search_driving_years
         //3:coor_x
         //4:coor_y
         //5:max_dist
@@ -193,8 +193,9 @@ public class Driver {
                 }
             }
 
-            stmt3.setInt(1,search_driving_years);
-            stmt3.setString(2,search_model);
+           
+            stmt3.setString(1,search_model);
+            stmt3.setInt(2,search_driving_years);
             stmt3.setInt(3,coor_x);
             stmt3.setInt(4,coor_y);
             stmt3.setInt(5,max_dist);
