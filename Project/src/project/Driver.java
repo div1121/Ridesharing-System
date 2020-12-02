@@ -48,6 +48,8 @@ public class Driver {
         int search_driving_years=0;
         
         String input_did=null;
+        
+        String input_max_dist =null;
     
         int coor_x=-1;
         int coor_y=-1;
@@ -63,6 +65,8 @@ public class Driver {
         
         boolean did_not_found=false;
         int did=0;//for input to SQL
+        
+
          
         do{
            did_not_found=false;
@@ -94,9 +98,7 @@ public class Driver {
                 }
             }
         }while((!isNumber(input_did))||did_not_found);
-        
-        
-        
+
         
        boolean coor_invalid=false;
         
@@ -135,12 +137,17 @@ public class Driver {
         }
         while(coor_invalid);
          
-      
+       do{
         
-        
-        System.out.println("Please enter the maximum distance from you to your passenger");
-        int max_dist = Integer.parseInt(sc.nextLine());
-
+            System.out.println("Please enter the maximum distance from you to your passenger");
+            input_max_dist = sc.nextLine().trim();
+             if (!isNumber(input_max_dist))
+                System.out.println("[ERROR] Invalid input");
+     
+        }
+        while(!isNumber(input_max_dist));
+        int max_dist= Integer.parseInt(input_max_dist);
+       
         String model =" SELECT V.Model"
                 + " FROM driver D,vehicle V "
                 + " WHERE D.id= ? AND D.vehicle_id  = V.id ";
