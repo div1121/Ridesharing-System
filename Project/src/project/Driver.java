@@ -524,7 +524,7 @@ public class Driver {
                        stmt.execute();
 
 
-                       String check_final = "SELECT T.id,start_time,end_time,fee,name FROM trip T cross join passenger P WHERE T.id=?";
+                       String check_final = "SELECT T.id,start_time,end_time,fee,name FROM trip T cross join passenger P WHERE T.id=? and T.passenger_id=P.id";
                        stmt = conn.prepareStatement(check_final);
                        stmt.setInt(1, tid);
                        rs = stmt.executeQuery();
