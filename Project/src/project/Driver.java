@@ -117,14 +117,19 @@ public class Driver {
        
             for(int i =0 ;i < coor.length;i++){
             
-              if(i==0)
+              if(i==0){
                 coor_x = Integer.parseInt(coor[i]);
-                if(i==1)
+                set_coor_x=true;
+              }
+                if(i==1){
                 coor_y= Integer.parseInt(coor[i]);
+                 set_coor_y=true;
+                }
             }
-            if(coor_x<0||coor_y<0||coor.length>2){
+            if(set_coor_x==false||set_coor_y==false||coor.length>2){  //     if(coor_x<0||coor_y<0||coor.length>2)
                  System.out.println("[ERROR] Invalid input");
-                 // System.out.println("coor_x is "+ coor_x+" and coor_y is "+ coor_y);
+                  //System.out.println("coor_x is "+ coor_x+" and coor_y is "+ coor_y);
+                  //System.out.println("set_coor_x is "+ set_coor_x+" and set_coor_x is "+ set_coor_y+" and coor.length is "+ coor.length);
                 coor_invalid=true;
 
             }
@@ -138,6 +143,8 @@ public class Driver {
 
         }
         while(coor_invalid);
+        
+         // System.out.println("coor_x is "+ coor_x+" and coor_y is "+ coor_y);
          
        do{
         
