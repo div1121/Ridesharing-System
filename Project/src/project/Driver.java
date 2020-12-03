@@ -261,7 +261,21 @@ public class Driver {
             catch(InputMismatchException | NumberFormatException ex ) {
                 System.out.println("[ERROR] Invalid input");
             }
+
         }
+        try {
+        String check_did_exist = "SELECT * FROM driver WHERE id=?";
+        PreparedStatement stmt = conn.prepareStatement(check_did_exist);
+        stmt.setInt(1, did);
+        ResultSet rs = stmt.executeQuery();
+
+        if(!rs.next())
+        {
+            System.out.println("[ERROR] Driver_id " + did + " don't exist.");
+            System.out.println("");
+            menu();
+        }
+
         while(true)
         {
             try {
@@ -274,11 +288,25 @@ public class Driver {
                 System.out.println("[ERROR] Invalid input");
             }
         }
+
+        String check_rid_exist = "SELECT * FROM request WHERE id=?";
+        stmt = conn.prepareStatement(check_did_exist);
+        stmt.setInt(1, rid);
+        rs = stmt.executeQuery();
+
+        if(!rs.next())
+        {
+            System.out.println("[ERROR] Request_id " + rid + " don't exist.");
+            System.out.println("");
+            menu();
+        }
+
+
         String check_unfinished = "SELECT id,end_time FROM trip WHERE driver_id=?";
-        try {
-            PreparedStatement stmt = conn.prepareStatement(check_unfinished);
+
+            stmt = conn.prepareStatement(check_unfinished);
             stmt.setInt(1, did);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             while (rs.next())
             {
