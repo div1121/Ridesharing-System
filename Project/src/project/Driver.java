@@ -511,12 +511,24 @@ public class Driver {
                 System.out.println("[ERROR] Invalid input");
             }
         }
-        String check_ut = "SELECT T.id,passenger_id,start_time,name FROM trip T cross join passenger P WHERE T.passenger_id=P.id and end_time IS NULL and driver_id=?";
         try
         {
-            PreparedStatement stmt = conn.prepareStatement(check_ut);
+        String check_did_exist = "SELECT * FROM driver WHERE id=?";
+        PreparedStatement stmt = conn.prepareStatement(check_did_exist);
+        stmt.setInt(1, did);
+        ResultSet rs = stmt.executeQuery();
+
+        if(!rs.next())
+        {
+            System.out.println("[ERROR] Driver_id " + did + " don't exist.");
+            System.out.println("");
+            menu();
+        }
+        String check_ut = "SELECT T.id,passenger_id,start_time,name FROM trip T cross join passenger P WHERE T.passenger_id=P.id and end_time IS NULL and driver_id=?";
+
+            stmt = conn.prepareStatement(check_ut);
             stmt.setInt(1, did);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             if(!rs.next())
             {
                 System.out.println("You don't have an unfinish trip.");
