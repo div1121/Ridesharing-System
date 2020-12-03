@@ -248,6 +248,8 @@ public class Driver {
         String model = "", sl = "", dest = "",pn="";
         Timestamp et;
         boolean taken=true;
+        PreparedStatement stmt;
+        ResultSet rs;
         System.out.println("2. Take a request");
         int did,rid;
         while(true)
@@ -256,25 +258,30 @@ public class Driver {
                 System.out.println("Please enter your ID.");
                 Scanner input = new Scanner(System.in);
                 did = input.nextInt();
+                String check_did_exist = "SELECT * FROM driver WHERE id=?";
+                stmt = conn.prepareStatement(check_did_exist);
+                stmt.setInt(1, did);
+                rs = stmt.executeQuery();
+
+                if(!rs.next())
+                {
+                    System.out.println("[ERROR] Driver_id " + did + " don't exist.");
+                    System.out.println("");
+                }
+                else
                 break;
             }
             catch(InputMismatchException | NumberFormatException ex ) {
                 System.out.println("[ERROR] Invalid input");
             }
-
+            catch (SQLException ex) {
+                System.out.println("SQLException: " + ex.getMessage());
+                System.out.println("SQLState: " + ex.getSQLState());
+                System.out.println("VendorError: " + ex.getErrorCode());
+            }
         }
         try {
-        String check_did_exist = "SELECT * FROM driver WHERE id=?";
-        PreparedStatement stmt = conn.prepareStatement(check_did_exist);
-        stmt.setInt(1, did);
-        ResultSet rs = stmt.executeQuery();
 
-        if(!rs.next())
-        {
-            System.out.println("[ERROR] Driver_id " + did + " don't exist.");
-            System.out.println("");
-            menu();
-        }
 
         while(true)
         {
@@ -282,25 +289,28 @@ public class Driver {
                 System.out.println("Please enter the request ID.");
                 Scanner input = new Scanner(System.in);
                 rid = input.nextInt();
+                String check_rid_exist = "SELECT * FROM request WHERE id=?";
+                stmt = conn.prepareStatement(check_rid_exist);
+                stmt.setInt(1, rid);
+                rs = stmt.executeQuery();
+
+                if(!rs.next())
+                {
+                    System.out.println("[ERROR] Request_id " + rid + " don't exist.");
+                    System.out.println("");
+                }
+                else
                 break;
             }
             catch(InputMismatchException | NumberFormatException ex ) {
                 System.out.println("[ERROR] Invalid input");
             }
+            catch (SQLException ex) {
+                System.out.println("SQLException: " + ex.getMessage());
+                System.out.println("SQLState: " + ex.getSQLState());
+                System.out.println("VendorError: " + ex.getErrorCode());
+            }
         }
-
-        String check_rid_exist = "SELECT * FROM request WHERE id=?";
-        stmt = conn.prepareStatement(check_did_exist);
-        stmt.setInt(1, rid);
-        rs = stmt.executeQuery();
-
-        if(!rs.next())
-        {
-            System.out.println("[ERROR] Request_id " + rid + " don't exist.");
-            System.out.println("");
-            menu();
-        }
-
 
         String check_unfinished = "SELECT id,end_time FROM trip WHERE driver_id=?";
 
@@ -498,6 +508,8 @@ public class Driver {
         Scanner sc = new Scanner(System.in);
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         System.out.println("3. Finish a trip");
+        PreparedStatement stmt;
+        ResultSet rs;
         int did,rid;
         while(true)
         {
@@ -505,25 +517,31 @@ public class Driver {
                 System.out.println("Please enter your ID.");
                 Scanner input = new Scanner(System.in);
                 did = input.nextInt();
-                break;
+                String check_did_exist = "SELECT * FROM driver WHERE id=?";
+                stmt = conn.prepareStatement(check_did_exist);
+                stmt.setInt(1, did);
+                rs = stmt.executeQuery();
+
+                if(!rs.next())
+                {
+                    System.out.println("[ERROR] Driver_id " + did + " don't exist.");
+                    System.out.println("");
+                }
+                else
+                    break;
             }
             catch(InputMismatchException | NumberFormatException ex ) {
                 System.out.println("[ERROR] Invalid input");
             }
+            catch (SQLException ex) {
+                System.out.println("SQLException: " + ex.getMessage());
+                System.out.println("SQLState: " + ex.getSQLState());
+                System.out.println("VendorError: " + ex.getErrorCode());
+            }
         }
         try
         {
-        String check_did_exist = "SELECT * FROM driver WHERE id=?";
-        PreparedStatement stmt = conn.prepareStatement(check_did_exist);
-        stmt.setInt(1, did);
-        ResultSet rs = stmt.executeQuery();
 
-        if(!rs.next())
-        {
-            System.out.println("[ERROR] Driver_id " + did + " don't exist.");
-            System.out.println("");
-            menu();
-        }
         String check_ut = "SELECT T.id,passenger_id,start_time,name FROM trip T cross join passenger P WHERE T.passenger_id=P.id and end_time IS NULL and driver_id=?";
 
             stmt = conn.prepareStatement(check_ut);
