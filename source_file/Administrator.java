@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//package project;
 
 import java.sql.*;
 import java.util.*;
@@ -81,13 +80,13 @@ public class Administrator {
 
         String create_request =
                 "CREATE TABLE request" +
-                        "(id INTEGER unsigned not NULL, " +
+                        "(id INTEGER unsigned not NULL AUTO_INCREMENT, " +
                         " start_location VARCHAR(21) not NULL, "+ //in taxi_stop
                         " destination VARCHAR(21) not NULL, "+    //in taxi_stop
                         " passenger_id INTEGER unsigned not NULL, "+//in passenger
                         " model VARCHAR(31), "+ //in vehicle
                         " passengers INTEGER unsigned, "+
-                        " taken BIT, "+ //boolean
+                        " taken BOOLEAN not NULL, "+ //boolean
                         " driving_years INTEGER unsigned, "+ //in driver
                         " PRIMARY KEY (id)) ";
 
@@ -102,7 +101,7 @@ public class Administrator {
 
         String create_trip =
                 " CREATE TABLE trip " +
-                        " (id INTEGER unsigned not NULL, "+
+                        " (id INTEGER unsigned not NULL AUTO_INCREMENT, "+
                         " driver_id INTEGER unsigned not NULL, " +//in driver
                         " passenger_id INTEGER unsigned not NULL, "+// in psasenger
                         " start_location VARCHAR(21) not NULL, "+ // in taxi_stop
@@ -297,9 +296,11 @@ public class Administrator {
                 start_loc = item[5].trim();
                 dest = item[6].trim();
                 fee = Integer.parseInt(item[7].trim());
-                java.util.Date tmp1 = new SimpleDateFormat("YYY-MM-DD HH:mm:ss").parse(start_time);
-                java.util.Date tmp2 = new SimpleDateFormat("YYY-MM-DD HH:mm:ss").parse(end_time);
+                java.util.Date tmp1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start_time);
+                java.util.Date tmp2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(end_time);
                 //System.out.println(id + "," + name + "," + vid + "," + driving_years);
+                //System.out.println(start_time + ", " + end_time);
+                //System.out.println(tmp1 + ", " + tmp2);
                 String insert_vehicle = "INSERT INTO trip(id, driver_id,passenger_id,start_time,end_time,start_location,destination,fee) VALUES (?,?,?,?,?,?,?,?)" ;
                 PreparedStatement stmt = conn.prepareStatement(insert_vehicle);
                 stmt.setInt(1,id);
@@ -365,7 +366,7 @@ public class Administrator {
     private void LoadData()
     {
         System.out.println("3. Load data");
-        System.out.println("Please enther the folder path");
+        System.out.println("Please enter the folder path");
         Scanner sc = new Scanner(System.in);
         String path = sc.nextLine();
         String path_driver = path + "\\drivers.csv";

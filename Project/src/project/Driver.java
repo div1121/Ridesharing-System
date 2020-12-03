@@ -16,8 +16,10 @@ import java.lang.*;
  */
 public class Driver {
     public Connection conn;
-    public Driver(Connection conn){
+    public Scanner sc;
+    public Driver(Connection conn, Scanner sc){
         this.conn = conn;
+        this.sc = sc;
     }
     void msg()
     {
@@ -61,7 +63,7 @@ public class Driver {
 
         System.out.println("1. Search requests");
 
-        Scanner sc = new Scanner(System.in);
+        //Scanner sc = new Scanner(System.in);
         
         boolean did_not_found=false;
         int did=0;//for input to SQL
@@ -235,8 +237,8 @@ public class Driver {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
 
 
 
@@ -254,8 +256,8 @@ public class Driver {
         {
             try {
                 System.out.println("Please enter your ID.");
-                Scanner input = new Scanner(System.in);
-                did = input.nextInt();
+                //Scanner input = new Scanner(System.in);
+                did = Integer.parseInt(sc.nextLine().trim());
                 break;
             }
             catch(InputMismatchException | NumberFormatException ex ) {
@@ -266,8 +268,8 @@ public class Driver {
         {
             try {
                 System.out.println("Please enter the request ID.");
-                Scanner input = new Scanner(System.in);
-                rid = input.nextInt();
+                //Scanner input = new Scanner(System.in);
+                rid = Integer.parseInt(sc.nextLine().trim());
                 break;
             }
             catch(InputMismatchException | NumberFormatException ex ) {
@@ -295,7 +297,7 @@ public class Driver {
                 System.out.println("Driver_id " + did + " have an unfinished trip (trip_id=" + tid + "), please finished it first to take another request.");
                 System.out.println("");
                 flag = 0;
-                menu();
+                //menu();
             }
             else
             {
@@ -321,7 +323,7 @@ public class Driver {
                 {
                     System.out.println("This is a closed request.");
                     System.out.println("");
-                    menu();
+                    //menu();
                 }
                 else
                 {
@@ -330,7 +332,7 @@ public class Driver {
                     {
                         System.out.println("Don't have this request ID.");
                         System.out.println("");
-                        menu();
+                        //menu();
                     }
                     else
                     {
@@ -344,7 +346,7 @@ public class Driver {
                         {
                             System.out.println("Not enough seat. Please try another request.");
                             System.out.println("");
-                            menu();
+                            //menu();
                         }
                         else
                         {
@@ -361,7 +363,7 @@ public class Driver {
                                 {
                                     System.out.println("Not fulfill model requirement. Please try another request.");
                                     System.out.println("");
-                                    menu();
+                                    //menu();
                                 }
                             }
 
@@ -377,7 +379,7 @@ public class Driver {
                                     if (!rs.next()) {
                                         System.out.println("Not fulfill driving year requirement. Please try another request.");
                                         System.out.println("");
-                                        menu();
+                                        //menu();
                                     }
                                 }
                                 else
@@ -416,7 +418,7 @@ public class Driver {
                                     {
                                         System.out.println("Passenger with this id doesn't exist.");
                                         System.out.println("");
-                                        menu();
+                                        //menu();
                                     }
                                     else
                                     {
@@ -428,7 +430,7 @@ public class Driver {
                                         {
                                             System.out.println("No trip found.");
                                             System.out.println("");
-                                            menu();
+                                            //menu();
                                         }
                                         else
                                             tid = rs.getInt(1);
@@ -438,8 +440,8 @@ public class Driver {
                                     }
 
 
-                                    System.out.println("");
-                                    menu();
+                                    //System.out.println("");
+                                    //menu();
                                 }
 
                         }
@@ -467,7 +469,7 @@ public class Driver {
         java.util.Date start=new java.util.Date();
         String tmp="";
         String pn="";
-        Scanner sc = new Scanner(System.in);
+        //Scanner sc = new Scanner(System.in);
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         System.out.println("3. Finish a trip");
         int did,rid;
@@ -475,8 +477,8 @@ public class Driver {
         {
             try {
                 System.out.println("Please enter your ID.");
-                Scanner input = new Scanner(System.in);
-                did = input.nextInt();
+                //Scanner input = new Scanner(System.in);
+                did = Integer.parseInt(sc.nextLine().trim());
                 break;
             }
             catch(InputMismatchException | NumberFormatException ex ) {
@@ -493,7 +495,7 @@ public class Driver {
             {
                 System.out.println("You don't have an unfinish trip.");
                 System.out.println("");
-                menu();
+                //menu();
             }
             else
             {
@@ -541,7 +543,7 @@ public class Driver {
                        {
                            System.out.println("Error in finding trip record.");
                            System.out.println("");
-                           menu();
+                           //menu();
                        }
                        else
                        {
@@ -559,8 +561,8 @@ public class Driver {
 
                    }
 
-                System.out.println("");
-                menu();
+                //System.out.println("");
+                //menu();
 
             }
 
@@ -588,38 +590,46 @@ public class Driver {
 
     void menu()
     {
-        System.out.println("Driver, what would you like to do?");
-        System.out.println("1. Search requests");
-        System.out.println("2. Take a request");
-        System.out.println("3. Finish a trip");
-        System.out.println("4. Go back");
-        System.out.println("Please enter [1-4]");
-        Scanner sc = new Scanner(System.in);
-        try{
-            int op = sc.nextInt();
-            switch (op)
-            {
-                case 1:
-                    SearchReq();
-                    break;
-                case 2:
-                    TakeReq();
-                    break;
-                case 3:
-                    FinishTrip();
-                    break;
-                case 4:
-                    GoBack();
-                    break;
+        while(true){
+            boolean b = false;
+            System.out.println("Driver, what would you like to do?");
+            System.out.println("1. Search requests");
+            System.out.println("2. Take a request");
+            System.out.println("3. Finish a trip");
+            System.out.println("4. Go back");
+            System.out.println("Please enter [1-4]");
+            //Scanner sc = new Scanner(System.in);
+            if (!sc.hasNextLine())
+                System.exit(0);
+            try{
+                int op = Integer.parseInt(sc.nextLine());
+                switch (op)
+                {
+                    case 1:
+                        SearchReq();
+                        break;
+                    case 2:
+                        TakeReq();
+                        break;
+                    case 3:
+                        FinishTrip();
+                        break;
+                    case 4:
+                        //GoBack();
+                        b = true;
+                        break;
                 default:
                     System.out.println("[Error] Invalid input.");     
-                    menu();
+                    //menu();
+                    break;
+                }
+                if (b)
                     break;
             }
-        }
-        catch(InputMismatchException e) {
-            System.out.println("[Error] Invalid input.");     
-            menu();
+            catch(InputMismatchException e) {
+                System.out.println("[Error] Invalid input.");     
+                //menu();
+            }
         }
     }
 
