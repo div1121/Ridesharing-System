@@ -532,7 +532,7 @@ public class Administrator {
             if (b)
                 break;
             }catch(Exception e){
-                System.out.println("Exception");
+                System.out.println("[ERROR] Exception found");
             }
         }
     }
