@@ -15,6 +15,7 @@ import java.util.*;
 public class Manager {
     public Connection conn;
     public Scanner sc;
+    
     public Manager(Connection conn, Scanner sc){
         this.conn = conn;
         this.sc = sc;
@@ -51,6 +52,7 @@ public class Manager {
                     System.out.println("[ERROR] The input is not a number");
             }while(!isNumber(mdis));
             int mindis = Integer.parseInt(mdis);
+            
             do{
                 System.out.println("Please enter the maximum travelling distance.");
                 mxdis = sc.nextLine().trim();
@@ -58,6 +60,7 @@ public class Manager {
                     System.out.println("[ERROR] The input is not a number");
             }while(!isNumber(mxdis));
             int maxdis = Integer.parseInt(mxdis);
+            
             String triprecord = "SELECT T.id, D.name, P.name, T.start_location, T.destination, TIMESTAMPDIFF(MINUTE,T.start_time,T.end_time)  "
                 + "FROM trip T, driver D, passenger P, taxi_stop S1, taxi_stop S2 "
                 + "WHERE D.id=T.driver_id AND T.passenger_id=P.id AND T.start_location=S1.name AND T.destination=S2.name AND T.end_time IS NOT NULL "
@@ -93,17 +96,8 @@ public class Manager {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
         catch (Exception e){
-            System.out.println("Exception");
+            System.out.println("[ERROR] Exception found");
         }
-        
-        //System.out.println("");
-        //menu();
-    }
-    private void GoBack()
-    {
-        Project a = new Project();
-        System.out.println("");
-        a.Menu();
     }
 
     void menu()
@@ -118,25 +112,23 @@ public class Manager {
             if (!sc.hasNextLine())
                 System.exit(0);
             try{
-            int op = Integer.parseInt(sc.nextLine());
-            switch (op)
-            {
-                case 1:
-                    FindTrip();
+                int op = Integer.parseInt(sc.nextLine());
+                switch (op)
+                {
+                    case 1:
+                        FindTrip();
+                        break;
+                    case 2:
+                        b = true;
+                        break;
+                    default:
+                        System.out.println("[ERROR] Invalid input, please try again.");
                     break;
-                case 2:
-                    //GoBack();
-                    b = true;
+                }
+                if (b)
                     break;
-                default:
-                    System.out.println("Invalid input, please try again.");
-                    //menu();
-                break;
-            }
-            if (b)
-                break;
             }catch(Exception e){
-                System.out.println("Exception");
+                System.out.println("[ERROR] Exception Found");
             }
         }
     }

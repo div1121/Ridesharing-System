@@ -573,7 +573,8 @@ public class Driver {
                    System.out.println("Trip ID, Passenger ID, Start");
                    System.out.println(tid+", "+pid+", "+tmp);
                    System.out.println("Do you wish to finish the trip? [y/n]");
-                   char op = sc.next().charAt(0);
+                   String r = sc.nextLine();
+                   char op = r.charAt(0);
                    if(op=='y')
                    {
                        System.out.println("Trip ID, Passenger name, Start, End, Fee");
@@ -645,12 +646,6 @@ public class Driver {
         {
             e.printStackTrace();
         }
-    }
-    private void GoBack()
-    {
-        Project a = new Project();
-        System.out.println("");
-        a.Menu();
     }
 
     void menu()

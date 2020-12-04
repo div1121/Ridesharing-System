@@ -44,7 +44,12 @@ public class Project {
 
     public static void Menu()
     {
-        Connection conn = connect();
+        Connection conn = null;
+        conn = connect();
+        if (conn==null){
+            System.out.println("[ERROR] Cannot connect to database");
+            System.exit(0);
+        }
         Scanner sc = new Scanner(System.in);
         while(true){
             boolean b = false;
