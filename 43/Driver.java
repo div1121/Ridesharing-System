@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 
-package project;
-
 import java.sql.*;
 import java.util.*;
 import java.text.*;
