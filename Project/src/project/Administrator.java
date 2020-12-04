@@ -15,8 +15,10 @@ import java.text.*;
  */
 public class Administrator {
     public Connection conn;
-    public Administrator(Connection conn){
+    public Scanner sc;
+    public Administrator(Connection conn,Scanner sc){
         this.conn = conn;
+        this.sc = sc;
     }
     public void teststatement() throws SQLException{
         String sql = "SELECT COUNT(*) FROM information_schema.tables";
@@ -134,8 +136,8 @@ public class Administrator {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
 
     }
     private void DeleteTables()
@@ -167,8 +169,8 @@ public class Administrator {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
 
     }
     private void load_drivers(String path)
@@ -368,13 +370,14 @@ public class Administrator {
     {
         System.out.println("3. Load data");
         System.out.println("Please enter the folder path");
-        Scanner sc = new Scanner(System.in);
+        //Scanner sc = new Scanner(System.in);
         String path = sc.nextLine();
-        String path_driver = path + "\\drivers.csv";
-        String path_vehicle = path + "\\vehicles.csv";
-        String path_passenger = path + "\\passengers.csv";
-        String path_trips = path + "\\trips.csv";
-        String path_taxi_stop = path + "\\taxi_stops.csv";
+        path = "./" + path;
+        String path_driver = path + "/drivers.csv";
+        String path_vehicle = path + "/vehicles.csv";
+        String path_passenger = path + "/passengers.csv";
+        String path_trips = path + "/trips.csv";
+        String path_taxi_stop = path + "/taxi_stops.csv";
 
         load_taxi_stop(path_taxi_stop);
         System.out.println("Finished load_taxi_stop");
@@ -388,8 +391,8 @@ public class Administrator {
         System.out.println("Finished load_trip");
 
         System.out.println("Processing...Data is loaded!");
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
     }
     private void CheckData()
     {
@@ -455,7 +458,7 @@ public class Administrator {
                 System.out.println("No records found.");
             else
                 while(rs.next()){
-                    System.out.print("Taxi stop: " + rs.getInt(1));
+                    System.out.print("Taxi_Stop: " + rs.getInt(1));
                     System.out.println();
                 }
         } catch (SQLException ex) {
@@ -464,8 +467,8 @@ public class Administrator {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
 
     }
     private void GoBack()
@@ -479,38 +482,51 @@ public class Administrator {
 
     void menu()
     {
-        System.out.println("Administrator, what would you like to do?");
-        System.out.println("1. Create tables");
-        System.out.println("2. Delete tables");
-        System.out.println("3. Load data");
-        System.out.println("4. Check data");
-        System.out.println("5. Go back");
-        System.out.println("Please enter [1-5]");
-        Scanner sc = new Scanner(System.in);
-        int op = sc.nextInt();
-        switch (op)
-        {
-            case 1:
-                CreateTables();
+        while(true){
+            boolean b = false;
+            System.out.println("Administrator, what would you like to do?");
+            System.out.println("1. Create tables");
+            System.out.println("2. Delete tables");
+            System.out.println("3. Load data");
+            System.out.println("4. Check data");
+            System.out.println("5. Go back");
+            System.out.println("Please enter [1-5]");
+            //Scanner sc = new Scanner(System.in);
+            if (!sc.hasNextLine())
+                System.exit(0);
+            try{
+            String temp = sc.nextLine();
+            //System.out.println(temp);
+            int op = Integer.parseInt(temp);
+            switch (op)
+            {
+                case 1:
+                    CreateTables();
+                    break;
+                case 2:
+                    DeleteTables();
+                    break;
+                case 3:
+                    LoadData();
+                    break;
+                case 4:
+                    CheckData();
+                    break;
+                case 5:
+                    //GoBack();
+                    b = true;
+                    break;
+                default:
+                    System.out.println("Invalid input, please try again.");
+                    //menu();
+                    break;
+            }
+            if (b)
                 break;
-            case 2:
-                DeleteTables();
-                break;
-            case 3:
-                LoadData();
-                break;
-            case 4:
-                CheckData();
-                break;
-            case 5:
-                GoBack();
-                break;
-            default:
-                System.out.println("Invalid input, please try again.");
-                menu();
-                break;
+            }catch(Exception e){
+                System.out.println("Exception");
+            }
         }
     }
-
 
 }
