@@ -221,7 +221,7 @@ public class Driver {
             }
            
             if(!rs3.isBeforeFirst())
-                System.out.println("No records found.");
+                System.out.println("[ERROR] No records found.");
             else{
                  System.out.println("request ID, passenger name, num of passengers, start location, destination");
                 while(rs3.next()){
@@ -339,7 +339,7 @@ public class Driver {
             }
             if (flag == 1)
             {
-                System.out.println("Driver_id " + did + " have an unfinished trip (trip_id=" + tid + "), please finished it first to take another request.");
+                System.out.println("[ERROR] Driver_id " + did + " have an unfinished trip (trip_id=" + tid + "), please finished it first to take another request.");
                 System.out.println("");
                 flag = 0;
                 //menu();
@@ -366,7 +366,7 @@ public class Driver {
                 System.out.println("Request info : " + pid + " " + sl + " " + dest + " " + seat + " " + model + " " + dy + " taken: " + taken);
                 if(taken)
                 {
-                    System.out.println("This is a closed request.");
+                    System.out.println("[ERROR] This is a closed request.");
                     System.out.println("");
                     //menu();
                 }
@@ -375,7 +375,7 @@ public class Driver {
                     System.out.println("This is an open request.");
                     if (sl.isEmpty())
                     {
-                        System.out.println("Don't have this request ID.");
+                        System.out.println("[ERROR] Don't have this request ID.");
                         System.out.println("");
                         //menu();
                     }
@@ -389,7 +389,7 @@ public class Driver {
                         rs = stmt.executeQuery();
                         if (!rs.next())
                         {
-                            System.out.println("Not enough seat. Please try another request.");
+                            System.out.println("[ERROR] Not enough seat. Please try another request.");
                             System.out.println("");
                             //menu();
                         }
@@ -406,7 +406,7 @@ public class Driver {
                                 rs = stmt.executeQuery();
                                 if (!rs.next())
                                 {
-                                    System.out.println("Not fulfill model requirement. Please try another request.");
+                                    System.out.println("[ERROR] Not fulfill model requirement. Please try another request.");
                                     System.out.println("");
                                     //menu();
                                 }
@@ -422,7 +422,7 @@ public class Driver {
                                     stmt.setInt(2, dy);
                                     rs = stmt.executeQuery();
                                     if (!rs.next()) {
-                                        System.out.println("Not fulfill driving year requirement. Please try another request.");
+                                        System.out.println("[ERROR] Not fulfill driving year requirement. Please try another request.");
                                         System.out.println("");
                                         //menu();
                                     }
@@ -461,7 +461,7 @@ public class Driver {
                                         pn = rs.getString(1);
                                     if(pn.isEmpty())
                                     {
-                                        System.out.println("Passenger with this id doesn't exist.");
+                                        System.out.println("[ERROR] Passenger with this id doesn't exist.");
                                         System.out.println("");
                                         //menu();
                                     }
@@ -473,7 +473,7 @@ public class Driver {
                                         rs = stmt.executeQuery();
                                         if (!rs.next())
                                         {
-                                            System.out.println("No trip found.");
+                                            System.out.println("[ERROR] No trip found.");
                                             System.out.println("");
                                             //menu();
                                         }
@@ -558,7 +558,7 @@ public class Driver {
             rs = stmt.executeQuery();
             if(!rs.next())
             {
-                System.out.println("You don't have an unfinish trip.");
+                System.out.println("[ERROR] You don't have an unfinish trip.");
                 System.out.println("");
                 // menu();
             }
