@@ -170,7 +170,7 @@ public class Driver {
         String searchreq = "SELECT R.id, P.name, R.passengers, R.start_location , R.destination "
                 + " FROM request R, passenger P, taxi_stop T "
                 + " WHERE R.passenger_id=P.id  AND R.taken=0 "
-                + " AND ((R.model IS NULL) OR (R.model= ?)) "
+                + " AND ((R.model IS NULL) OR (R.model LIKE ?)) "
                 + " AND ((R.driving_years IS NULL) OR (R.driving_years <= ?)) "
                 + " AND T.name= R.start_location"
                 + " AND (ABS(? - T.location_x) + ABS(? - T.location_y)) <= ? ";
@@ -221,7 +221,7 @@ public class Driver {
             }
            
             if(!rs3.isBeforeFirst())
-                System.out.println("[ERROR] No records found.");
+                System.out.println("No records found.");
             else{
                  System.out.println("request ID, passenger name, num of passengers, start location, destination");
                 while(rs3.next()){
