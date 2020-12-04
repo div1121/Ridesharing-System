@@ -346,7 +346,7 @@ public class Driver {
             }
             else
             {
-                System.out.println("Driver Dun have unfinished trip.");
+                System.out.println("Driver doesn't have unfinished trip.");
                 String check_request = "SELECT passenger_id,start_location,destination,passengers,model,taken,driving_years FROM request WHERE id=?";
                 stmt = conn.prepareStatement(check_request);
                 stmt.setInt(1, rid);
