@@ -130,7 +130,7 @@ public class Manager {
                     break;
                 default:
                     System.out.println("Invalid input, please try again.");
-                    menu();
+                    //menu();
                 break;
             }
             if (b)
