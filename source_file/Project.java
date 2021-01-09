@@ -42,54 +42,74 @@ public class Project {
 
     public static void Menu()
     {
-        Connection conn = connect();
-        System.out.println("Welcome! Who are you?");
-        System.out.println("1. An administrotor");
-        System.out.println("2. A passenger");
-        System.out.println("3. A driver");
-        System.out.println("4. A manager");
-        System.out.println("5. None of the above");
-        System.out.println("Please enter [1-4]");
+        Connection conn = null;
+        conn = connect();
+        if (conn==null){
+            System.out.println("[ERROR] Cannot connect to database");
+            System.exit(0);
+        }
         Scanner sc = new Scanner(System.in);
-        int role = sc.nextInt();
-        switch(role)
-        {
-            case 1:
-                Admin(conn);
+        while(true){
+            boolean b = false;
+            System.out.println("Welcome! Who are you?");
+            System.out.println("1. An administrotor");
+            System.out.println("2. A passenger");
+            System.out.println("3. A driver");
+            System.out.println("4. A manager");
+            System.out.println("5. None of the above");
+            System.out.println("Please enter [1-4]");
+            //Scanner sc = new Scanner(System.in);
+            if (!sc.hasNextLine())
+                System.exit(0);
+            try{
+            String temp = sc.nextLine();
+            //System.out.println(temp);
+            int role = Integer.parseInt(temp);
+            switch(role)
+            {
+                case 1:
+                    Admin(conn,sc);
+                    break;
+                case 2:
+                    Passenger(conn,sc);
+                    break;
+                case 3:
+                    Driver(conn,sc);
+                    break;
+                case 4:
+                    Manager(conn,sc);
+                    break;
+                default:
+                    System.out.println("Bye.");
+                    b = true;
+            }
+            if (b)
                 break;
-            case 2:
-                Passenger(conn);
-                break;
-            case 3:
-                Driver(conn);
-                break;
-            case 4:
-                Manager(conn);
-                break;
-            default:
-                System.out.println("Bye.");
+            }catch(Exception e){
+                System.out.println("[ERROR] Exception found");
+            }
         }
     }
 
-    public static void Admin(Connection conn)
+    public static void Admin(Connection conn, Scanner sc)
     {
-        Administrator a = new Administrator(conn);
+        Administrator a = new Administrator(conn, sc);
         a.menu();
 
     }
-    public static void Driver(Connection conn)
+    public static void Driver(Connection conn, Scanner sc)
     {
-        Driver a = new Driver(conn);
+        Driver a = new Driver(conn, sc);
         a.menu();
     }
-    public static void Manager(Connection conn)
+    public static void Manager(Connection conn, Scanner sc)
     {
-        Manager a = new Manager(conn);
+        Manager a = new Manager(conn, sc);
         a.menu();
     }
-    public static void Passenger(Connection conn)
+    public static void Passenger(Connection conn, Scanner sc)
     {
-        Passenger a = new Passenger(conn);
+        Passenger a = new Passenger(conn, sc);
         a.menu();
     }
 
@@ -100,7 +120,7 @@ public class Project {
         //admin.teststatement();
         Menu();
 
-
+        
 
     }
     

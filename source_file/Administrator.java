@@ -8,15 +8,20 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 import java.text.*;
+
 /**
  *
  * @author user
  */
 public class Administrator {
     public Connection conn;
-    public Administrator(Connection conn){
+    public Scanner sc;
+    
+    public Administrator(Connection conn,Scanner sc){
         this.conn = conn;
+        this.sc = sc;
     }
+    
     public void teststatement() throws SQLException{
         String sql = "SELECT COUNT(*) FROM information_schema.tables";
         Statement stmt;
@@ -44,12 +49,12 @@ public class Administrator {
     {
         System.out.println("Login as Admin");
     }
-
+    
     private void CreateTables()
     {
         System.out.println("1. Create tables");
         String create_driver =
-                "CREATE TABLE driver" +
+                "CREATE TABLE IF NOT EXISTS driver" +
                         "(id INTEGER unsigned not NULL, " +
                         " name VARCHAR(31), " +
                         " vehicle_id VARCHAR(7), " +
@@ -58,20 +63,20 @@ public class Administrator {
                         " FOREIGN KEY (vehicle_id) REFERENCES vehicle(id) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         String create_vehicle =
-                "CREATE TABLE vehicle" +
+                "CREATE TABLE IF NOT EXISTS vehicle" +
                         "(id VARCHAR(7) not NULL, " +
                         " model VARCHAR(31), "+
                         " seats INTEGER unsigned, " +
                         " PRIMARY KEY ( id )) " ;
 
         String create_passenger =
-                "CREATE TABLE passenger" +
+                "CREATE TABLE IF NOT EXISTS passenger" +
                         "(id INTEGER unsigned not NULL, " +
                         " name VARCHAR(31), "+
                         " PRIMARY KEY ( id ))";
 
         String create_taxi_stop =
-                "CREATE TABLE taxi_stop" +
+                "CREATE TABLE IF NOT EXISTS taxi_stop" +
                         " (name VARCHAR(21) not NULL,"+
                         " location_x INTEGER, "+
                         " location_y INTEGER, "+
@@ -79,7 +84,7 @@ public class Administrator {
 
 
         String create_request =
-                "CREATE TABLE request" +
+                "CREATE TABLE IF NOT EXISTS request" +
                         "(id INTEGER unsigned not NULL AUTO_INCREMENT, " +
                         " start_location VARCHAR(21) not NULL, "+ //in taxi_stop
                         " destination VARCHAR(21) not NULL, "+    //in taxi_stop
@@ -100,7 +105,7 @@ public class Administrator {
         //" ADD FOREIGN KEY (driving_years) REFERENCES driver ON DELETE CASCADE ON UPDATE CASCADE ";
 
         String create_trip =
-                " CREATE TABLE trip " +
+                " CREATE TABLE IF NOT EXISTS trip " +
                         " (id INTEGER unsigned not NULL AUTO_INCREMENT, "+
                         " driver_id INTEGER unsigned not NULL, " +//in driver
                         " passenger_id INTEGER unsigned not NULL, "+// in psasenger
@@ -133,9 +138,6 @@ public class Administrator {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-        System.out.println("");
-        menu();
-
     }
     private void DeleteTables()
     {
@@ -166,8 +168,8 @@ public class Administrator {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
 
     }
     private void load_drivers(String path)
@@ -196,10 +198,10 @@ public class Administrator {
             }
         }
         catch(FileNotFoundException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] File not found");
         }
         catch(IOException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] IO exception");
         }
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -231,10 +233,10 @@ public class Administrator {
             }
         }
         catch(FileNotFoundException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] File not found");
         }
         catch(IOException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] IO exception");
         }
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -266,10 +268,10 @@ public class Administrator {
             }
         }
         catch(FileNotFoundException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] File not found");
         }
         catch(IOException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] IO exception");
         }
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -316,10 +318,10 @@ public class Administrator {
             }
         }
         catch(FileNotFoundException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] File not found");
         }
         catch(IOException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] IO exception");
         }
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -327,7 +329,7 @@ public class Administrator {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
         catch(ParseException e){
-            e.printStackTrace();
+            System.out.println("[ERROR] Parse exception");
         }
     }
     private void load_passenger(String path)
@@ -352,10 +354,10 @@ public class Administrator {
             }
         }
         catch(FileNotFoundException e){
-            e.printStackTrace();
+           System.out.println("[ERROR] File not found");
         }
         catch(IOException e){
-            e.printStackTrace();
+           System.out.println("[ERROR] IO exception");
         }
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -367,13 +369,14 @@ public class Administrator {
     {
         System.out.println("3. Load data");
         System.out.println("Please enter the folder path");
-        Scanner sc = new Scanner(System.in);
+        //Scanner sc = new Scanner(System.in);
         String path = sc.nextLine();
-        String path_driver = path + "\\drivers.csv";
-        String path_vehicle = path + "\\vehicles.csv";
-        String path_passenger = path + "\\passengers.csv";
-        String path_trips = path + "\\trips.csv";
-        String path_taxi_stop = path + "\\taxi_stops.csv";
+        path = "./" + path;
+        String path_driver = path + "/drivers.csv";
+        String path_vehicle = path + "/vehicles.csv";
+        String path_passenger = path + "/passengers.csv";
+        String path_trips = path + "/trips.csv";
+        String path_taxi_stop = path + "/taxi_stops.csv";
 
         load_taxi_stop(path_taxi_stop);
         System.out.println("Finished load_taxi_stop");
@@ -387,8 +390,8 @@ public class Administrator {
         System.out.println("Finished load_trip");
 
         System.out.println("Processing...Data is loaded!");
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
     }
     private void CheckData()
     {
@@ -403,113 +406,134 @@ public class Administrator {
         ResultSet rs = null;
         try {
             stmt = conn.createStatement();
-            if (stmt.execute(checkvehicle))
-                rs = stmt.getResultSet();
-            if(!rs.isBeforeFirst())
-                System.out.println("No records found.");
-            else
-                while(rs.next()){
-                    System.out.print("Vehicle: " + rs.getInt(1));
-                    System.out.println();
-                }
-            if (stmt.execute(checkpassenger))
-                rs = stmt.getResultSet();
-            if(!rs.isBeforeFirst())
-                System.out.println("No records found.");
-            else
-                while(rs.next()){
-                    System.out.print("Passenger: " + rs.getInt(1));
-                    System.out.println();
-                }
-            if (stmt.execute(checkdriver))
-                rs = stmt.getResultSet();
-            if(!rs.isBeforeFirst())
-                System.out.println("No records found.");
-            else
-                while(rs.next()){
-                    System.out.print("Driver: " + rs.getInt(1));
-                    System.out.println();
-                }
-            if (stmt.execute(checktrip))
-                rs = stmt.getResultSet();
-            if(!rs.isBeforeFirst())
-                System.out.println("No records found.");
-            else
-                while(rs.next()){
-                    System.out.print("Trip: " + rs.getInt(1));
-                    System.out.println();
-                }
-            if (stmt.execute(checkrequest))
-                rs = stmt.getResultSet();
-            if(!rs.isBeforeFirst())
-                System.out.println("No records found.");
-            else
-                while(rs.next()){
-                    System.out.print("Request: " + rs.getInt(1));
-                    System.out.println();
-                }
-            if (stmt.execute(checktaxistop))
-                rs = stmt.getResultSet();
-            if(!rs.isBeforeFirst())
-                System.out.println("No records found.");
-            else
-                while(rs.next()){
-                    System.out.print("Taxi stop: " + rs.getInt(1));
-                    System.out.println();
-                }
+            try{
+                if (stmt.execute(checkvehicle))
+                    rs = stmt.getResultSet();
+                if(!rs.isBeforeFirst())
+                    System.out.println("No records found.");
+                else
+                    while(rs.next()){
+                        System.out.print("Vehicle: " + rs.getInt(1));
+                        System.out.println();
+                    }
+            }catch (SQLException ex) {
+                System.out.println("[ERROR] Vehicle table does not exist");
+            }
+            try{
+                if (stmt.execute(checkpassenger))
+                    rs = stmt.getResultSet();
+                if(!rs.isBeforeFirst())
+                    System.out.println("No records found.");
+                else
+                    while(rs.next()){
+                        System.out.print("Passenger: " + rs.getInt(1));
+                        System.out.println();
+                    }
+            }catch (SQLException ex) {
+                System.out.println("[ERROR] Passenger table does not exist");
+            }
+            try{
+                if (stmt.execute(checkdriver))
+                    rs = stmt.getResultSet();
+                if(!rs.isBeforeFirst())
+                    System.out.println("No records found.");
+                else
+                    while(rs.next()){
+                        System.out.print("Driver: " + rs.getInt(1));
+                        System.out.println();
+                    }
+            }catch (SQLException ex) {
+                System.out.println("[ERROR] Driver table does not exist");
+            }
+            try{
+                if (stmt.execute(checktrip))
+                    rs = stmt.getResultSet();
+                if(!rs.isBeforeFirst())
+                    System.out.println("No records found.");
+                else
+                    while(rs.next()){
+                        System.out.print("Trip: " + rs.getInt(1));
+                        System.out.println();
+                    }
+            }catch (SQLException ex) {
+                System.out.println("[ERROR] Trip table does not exist");
+            }
+            try{
+                if (stmt.execute(checkrequest))
+                    rs = stmt.getResultSet();
+                if(!rs.isBeforeFirst())
+                    System.out.println("No records found.");
+                else
+                    while(rs.next()){
+                        System.out.print("Request: " + rs.getInt(1));
+                        System.out.println();
+                    }
+            }catch (SQLException ex) {
+                System.out.println("[ERROR] Request table does not exist");
+            }
+            try{
+                if (stmt.execute(checktaxistop))
+                    rs = stmt.getResultSet();
+                if(!rs.isBeforeFirst())
+                    System.out.println("No records found.");
+                else
+                    while(rs.next()){
+                        System.out.print("Taxi_Stop: " + rs.getInt(1));
+                        System.out.println();
+                    }
+            }catch (SQLException ex) {
+                System.out.println("[ERROR] Taxi_stop table does not exist");
+            }
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
-
-        System.out.println("");
-        menu();
-
     }
-    private void GoBack()
-    {
-        System.out.println("5. Go back");
-        Project a = new Project();
-        System.out.println("");
-        a.Menu();
-    }
-
 
     void menu()
     {
-        System.out.println("Administrator, what would you like to do?");
-        System.out.println("1. Create tables");
-        System.out.println("2. Delete tables");
-        System.out.println("3. Load data");
-        System.out.println("4. Check data");
-        System.out.println("5. Go back");
-        System.out.println("Please enter [1-5]");
-        Scanner sc = new Scanner(System.in);
-        int op = sc.nextInt();
-        switch (op)
-        {
-            case 1:
-                CreateTables();
+        while(true){
+            boolean b = false;
+            System.out.println("Administrator, what would you like to do?");
+            System.out.println("1. Create tables");
+            System.out.println("2. Delete tables");
+            System.out.println("3. Load data");
+            System.out.println("4. Check data");
+            System.out.println("5. Go back");
+            System.out.println("Please enter [1-5]");
+            if (!sc.hasNextLine())
+                System.exit(0);
+            try{
+            String temp = sc.nextLine();
+            int op = Integer.parseInt(temp);
+            switch (op)
+            {
+                case 1:
+                    CreateTables();
+                    break;
+                case 2:
+                    DeleteTables();
+                    break;
+                case 3:
+                    LoadData();
+                    break;
+                case 4:
+                    CheckData();
+                    break;
+                case 5:
+                    b = true;
+                    break;
+                default:
+                    System.out.println("Invalid input, please try again.");
+                    break;
+            }
+            if (b)
                 break;
-            case 2:
-                DeleteTables();
-                break;
-            case 3:
-                LoadData();
-                break;
-            case 4:
-                CheckData();
-                break;
-            case 5:
-                GoBack();
-                break;
-            default:
-                System.out.println("Invalid input, please try again.");
-                menu();
-                break;
+            }catch(Exception e){
+                System.out.println("[ERROR] Exception found");
+            }
         }
     }
-
 
 }

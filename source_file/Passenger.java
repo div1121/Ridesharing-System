@@ -14,9 +14,13 @@ import java.text.*;
  */
 public class Passenger {
     public Connection conn;
-    public Passenger(Connection conn){
+    public Scanner sc;
+    
+    public Passenger(Connection conn,Scanner sc){
         this.conn = conn;
+        this.sc = sc;
     }
+    
     public boolean inPassenger(int pid){
         String checkid = "SELECT * from passenger where id=?";
         ResultSet rs = null;
@@ -59,7 +63,7 @@ public class Passenger {
     
     public boolean inRequest(int pid){
         String checkrequest = "SELECT * from request where passenger_id=? and taken=0";
-         ResultSet rs = null;
+        ResultSet rs = null;
         PreparedStatement stmt;
         try {
             stmt = conn.prepareStatement(checkrequest);
@@ -113,6 +117,33 @@ public class Passenger {
         return false;
     }
     
+    public boolean findpossibleseats(int numofpass){
+        ResultSet rs = null;
+        PreparedStatement stmt;
+        int count = 0;
+        String matchrequest = "SELECT COUNT(*) "
+                            + "From driver d, vehicle v "
+                            + "WHERE d.vehicle_id=v.id AND v.seats >= ? AND d.id NOT IN "
+                            + "(SELECT driver_id FROM trip WHERE end_time IS NULL)";
+        try{
+            stmt = conn.prepareStatement(matchrequest);
+            stmt.setInt(1,numofpass);
+            if (stmt.execute()) {
+                 rs = stmt.getResultSet();
+            }
+            while(rs.next()){
+                count = rs.getInt(1);
+            }
+            if (count > 0)
+                return true;
+        }catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        return false;
+    }
+    
     public boolean findpossibleyear(int numofpass,String model,String driveyear){
         ResultSet rs = null;
         PreparedStatement stmt;
@@ -126,24 +157,24 @@ public class Passenger {
                             + "(SELECT driver_id FROM trip WHERE end_time IS NULL)";
         try{
              stmt = conn.prepareStatement(matchrequest);
-                     stmt.setInt(1,numofpass);
-                     if (!model.isEmpty()){
-                         stmt.setString(2,model);
-                         String temp = "%" + model + "%";
-                         stmt.setString(3, temp);
-                     }
-                     else{
-                         stmt.setString(2, null);
-                         stmt.setString(3, null);
-                     }
-                     if (!driveyear.isEmpty()){
-                         stmt.setInt(4,mindriveyear);
-                         stmt.setInt(5,mindriveyear);
-                     }
-                     else{
-                         stmt.setNull(4, java.sql.Types.INTEGER);
-                         stmt.setNull(5, java.sql.Types.INTEGER);
-                     }
+             stmt.setInt(1,numofpass);
+             if (!model.isEmpty()){
+                 stmt.setString(2,model);
+                 String temp = "%" + model + "%";
+                 stmt.setString(3, temp);
+             }
+             else{
+                 stmt.setString(2, null);
+                 stmt.setString(3, null);
+             }
+             if (!driveyear.isEmpty()){
+                 stmt.setInt(4,mindriveyear);
+                 stmt.setInt(5,mindriveyear);
+             }
+             else{
+                 stmt.setNull(4, java.sql.Types.INTEGER);
+                 stmt.setNull(5, java.sql.Types.INTEGER);
+             }
             if (stmt.execute()) {
                  rs = stmt.getResultSet();
             }
@@ -186,7 +217,6 @@ public class Passenger {
         return true;
     }
    
-    
     void msg()
     {
         System.out.println("Login as Passenger");
@@ -194,11 +224,11 @@ public class Passenger {
 
     private void ReqRide()
     {
-            ResultSet rs = null;
-            System.out.println("1. Request a ride");
-            Scanner sc = new Scanner(System.in);
-            String id,num,startloc,endloc,model,driveyear;
-            int pid = -1,numofpass=1000,mindriveyear=0,count=0;;
+        ResultSet rs = null;
+        System.out.println("1. Request a ride");
+        String id,num,startloc,endloc,model,driveyear;
+        int pid = -1,numofpass=1000,mindriveyear=0,count=0;
+        try{
             do{
                 System.out.println("Please enter your ID.");
                 id = sc.nextLine().trim();
@@ -208,10 +238,12 @@ public class Passenger {
                     pid = Integer.parseInt(id);
                     if (!inPassenger(pid))
                         System.out.println("[ERROR] Your ID is not found.");
-                    if (inRequest(pid))
+                    if (inRequest(pid)){
                         System.out.println("[ERROR] You have an open request with you");
+                        return;
+                    }
                 }
-            }while(!isNumber(id) || !inPassenger(pid) || inRequest(pid));
+            }while(!isNumber(id) || !inPassenger(pid));
             pid = Integer.parseInt(id);
             
             do{
@@ -221,10 +253,10 @@ public class Passenger {
                     System.out.println("[ERROR] The input is not a number");
                 else{
                     numofpass = Integer.parseInt(num);
-                    if (numofpass>7)
+                    if (!findpossibleseats(numofpass))
                         System.out.println("[ERROR] Invalid number of passengers");
                 }
-            }while(!isNumber(num) || numofpass>7);
+            }while(!isNumber(num) || !findpossibleseats(numofpass));
             
             
             do{
@@ -261,19 +293,21 @@ public class Passenger {
                 }
             }while((!driveyear.isEmpty() && !isNumber(driveyear)) || !findpossibleyear(numofpass,model,driveyear));
             
+            if (!driveyear.isEmpty())
+                mindriveyear = Integer.parseInt(driveyear);
+            
             PreparedStatement stmt;
-            try {
-                String matchrequest = "SELECT COUNT(*) "
+            String matchrequest = "SELECT COUNT(*) "
                             + "From driver d, vehicle v "
                             + "WHERE d.vehicle_id=v.id AND v.seats >= ? AND (? IS NULL OR v.model LIKE ?) AND (? is NULL OR d.driving_years >= ?)";
-                 stmt = conn.prepareStatement(matchrequest);
-                 stmt.setInt(1,numofpass);
-                 if (!model.isEmpty()){
-                     stmt.setString(2,model);
+                stmt = conn.prepareStatement(matchrequest);
+                stmt.setInt(1,numofpass);
+                if (!model.isEmpty()){
+                    stmt.setString(2,model);
                      String temp = "%" + model + "%";
                      stmt.setString(3, temp);
-                }
-                else{
+                 }
+                 else{
                      stmt.setString(2, null);
                      stmt.setString(3, null);
                  }
@@ -314,54 +348,56 @@ public class Passenger {
                 System.out.println("SQLState: " + ex.getSQLState());
                 System.out.println("VendorError: " + ex.getErrorCode());
             }
-            
-            System.out.println("");
-            menu();
+            catch (Exception e){
+                System.out.println("[ERROR] Exception found");
+            }
     }
     private void  CheckTripRecord()
     {
         ResultSet rs = null;
         System.out.println("2. Check trip records");
         String id,startdate,enddate,dest;
-        Scanner sc = new Scanner(System.in);
         int pid = -1;
-        do{
-            System.out.println("Please enter your ID.");
-            id = sc.nextLine().trim();
-            if (!isNumber(id))
-                System.out.println("[ERROR] The input is not a number");
-            else{
-                pid = Integer.parseInt(id);
-                if (!inPassenger(pid))
-                    System.out.println("[ERROR] Your ID is not found.");
-            }
-        }while(!isNumber(id) || !inPassenger(pid));
-        pid = Integer.parseInt(id);
-        do{
-            System.out.println("Please enter the start date.");
-            startdate = sc.nextLine().trim();
-            if (!isDate(startdate))
-                System.out.println("[ERROR] The input is not a correct date format");
-        }while(!isDate(startdate));
-        do {
-            System.out.println("Please enter the end date.");
-            enddate = sc.nextLine().trim();
-            if (!isDate(enddate))
-                System.out.println("[ERROR] The input is not a correct date format");
-        }while(!isDate(enddate));
-        do {
-            System.out.println("Please enter the destination.");
-            dest = sc.nextLine().trim();
-            if (!inTaxistop(dest))
-                System.out.println("[ERROR] The destination is not found");
-        }while(!inTaxistop(dest));
-        //System.out.println(pid + "," +startdate + "," + enddate + "," + dest);
-        String triprecord = "SELECT T.id, D.name, V.id, V.model, T.start_time, T.end_time, T.fee, T.start_location, T.destination  "
-                + "FROM trip T, driver D, vehicle V "
-                + "WHERE D.id=T.driver_id AND D.vehicle_id=V.id AND T.end_time IS NOT NULL AND T.passenger_id=? AND T.start_time >= ? AND T.end_time < (? + INTERVAL 1 DAY) AND T.destination=? "
-                + "ORDER BY T.start_time DESC";
-        //String triprecord1 = "SELECT T.id, D.name, V.id, V.model, T.start_time, T.end_time, T.fee, T.start_location, T.destination  FROM trip T, driver D, vehicle V WHERE D.id=T.driver_id AND D.vehicle_id=V.id AND T.passenger_id=? AND T.destination=?";
-        try {
+        try{
+            do{
+                System.out.println("Please enter your ID.");
+                id = sc.nextLine().trim();
+                if (!isNumber(id))
+                    System.out.println("[ERROR] The input is not a number");
+                else{
+                    pid = Integer.parseInt(id);
+                    if (!inPassenger(pid))
+                        System.out.println("[ERROR] Your ID is not found.");
+                }
+            }while(!isNumber(id) || !inPassenger(pid));
+            pid = Integer.parseInt(id);
+            
+            do{
+                System.out.println("Please enter the start date.");
+                startdate = sc.nextLine().trim();
+                if (!isDate(startdate))
+                    System.out.println("[ERROR] The input is not a correct date format");
+            }while(!isDate(startdate));
+            
+            do {
+                System.out.println("Please enter the end date.");
+                enddate = sc.nextLine().trim();
+                if (!isDate(enddate))
+                    System.out.println("[ERROR] The input is not a correct date format");
+            }while(!isDate(enddate));
+            
+            do {
+                System.out.println("Please enter the destination.");
+                dest = sc.nextLine().trim();
+                if (!inTaxistop(dest))
+                    System.out.println("[ERROR] The destination is not found");
+            }while(!inTaxistop(dest));
+            //System.out.println(pid + "," +startdate + "," + enddate + "," + dest);
+            String triprecord = "SELECT T.id, D.name, V.id, V.model, T.start_time, T.end_time, T.fee, T.start_location, T.destination  "
+                    + "FROM trip T, driver D, vehicle V "
+                    + "WHERE D.id=T.driver_id AND D.vehicle_id=V.id AND T.end_time IS NOT NULL AND T.passenger_id=? AND T.start_time >= ? AND T.end_time < (? + INTERVAL 1 DAY) AND T.destination=? "
+                    + "ORDER BY T.start_time DESC";
+            //String triprecord1 = "SELECT T.id, D.name, V.id, V.model, T.start_time, T.end_time, T.fee, T.start_location, T.destination  FROM trip T, driver D, vehicle V WHERE D.id=T.driver_id AND D.vehicle_id=V.id AND T.passenger_id=? AND T.destination=?";
             PreparedStatement stmt = conn.prepareStatement(triprecord);
             stmt.setInt(1,pid);
             stmt.setString(2,startdate);
@@ -400,41 +436,50 @@ public class Passenger {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
+        catch (Exception e){
+            System.out.println("[ERROR] Exception found");
+        }
         
-        System.out.println("");
-        menu();
+        //System.out.println("");
+        //menu();
     }
-    private void GoBack()
-    {
-        Project a = new Project();
-        System.out.println("");
-        a.Menu();
-    }
-
+    
     void menu()
     {
-        System.out.println("Passenger, what would you like to do?");
-        System.out.println("1. Request a ride");
-        System.out.println("2. Check trip records");
-        System.out.println("3. Go back");
-        System.out.println("Please enter [1-3]");
-        Scanner sc = new Scanner(System.in);
-        int op = sc.nextInt();
-        switch (op)
-        {
-            case 1:
-                ReqRide();
-                break;
-            case 2:
-                CheckTripRecord();
-                break;
-            case 3:
-                GoBack();
-                break;
-            default:
-                System.out.println("Invalid input, please try again.");
-                menu();
-                break;
+        while(true){
+            boolean b = false;
+            System.out.println("Passenger, what would you like to do?");
+            System.out.println("1. Request a ride");
+            System.out.println("2. Check trip records");
+            System.out.println("3. Go back");
+            System.out.println("Please enter [1-3]");
+            //Scanner sc = new Scanner(System.in);
+            if (!sc.hasNextLine())
+                System.exit(0);
+            try{
+                int op = Integer.parseInt(sc.nextLine());
+                switch (op)
+                {
+                    case 1:
+                        ReqRide();
+                        break;
+                    case 2:
+                        CheckTripRecord();
+                        break;
+                    case 3:
+                        //GoBack();
+                        b = true;
+                        break;
+                    default:
+                        System.out.println("[ERROR] Invalid input, please try again.");
+                        //menu();
+                        break;
+                }
+                if (b)
+                    break;
+            }catch(Exception e){
+                System.out.println("[ERROR] Exception found");
+            }
         }
     }
 }
