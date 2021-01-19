@@ -3,6 +3,27 @@
 - Project detail can be found in the folder of project_detail
 - Test data is provided in the folder of test_data
 
+# Interface
+Overall:
+
+![alt text](https://github.com/div1121/CSCI3170-Project/blob/main/project_detail/overall.JPG)
+
+Admin:
+
+![alt text](https://github.com/div1121/CSCI3170-Project/blob/main/project_detail/admin.JPG)
+
+Passenger:
+
+![alt text](https://github.com/div1121/CSCI3170-Project/blob/main/project_detail/passenger.JPG)
+
+Driver:
+
+![alt text](https://github.com/div1121/CSCI3170-Project/blob/main/project_detail/driver.JPG)
+
+Manager:
+
+![alt text](https://github.com/div1121/CSCI3170-Project/blob/main/project_detail/manager.JPG)
+
 # Compilation
 1. mysql-connector-java-5.1.47.jar => Download it and place it in your directory.
 - NetBeans: You can open project in folder through NetBeans and add this into the library of the project (project setting) using classpath.
