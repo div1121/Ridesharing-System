@@ -6,7 +6,7 @@
 # Compilation
 1. mysql-connector-java-5.1.47.jar => Download it and place it in your directory.
 - NetBeans: You can open project in folder through NetBeans and add this into the library of the project (project setting) using classpath.
-- CMD: Run the command in the test_data folder. java -cp .;mysql-connector-5.1.47.jar Project
+- CMD: Run the command in the test_data folder. (java -cp .;mysql-connector-5.1.47.jar Project)
 
 2. Database 
 - Provided Database: Access MYSQL through CUHK VPN OR CSE VPN if not in CUHK
