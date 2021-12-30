@@ -1,4 +1,4 @@
-# SQL-Project
+# Ridesharing System
 - Database Project using Java and MYSQL related to ridesharing system (interactive interface with administrators, passengers, managers and drivers)
 - Project detail can be found in the folder of project_detail
 - Test data is provided in the folder of test_data
